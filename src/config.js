@@ -1,4 +1,4 @@
-/* =============================================================================
+﻿/* =============================================================================
    伊甸园 Eden · 内容配置文件
    -----------------------------------------------------------------------------
    整个网站的文字、成员、领地、公告、礼包清单，全都在这一个文件里改。
@@ -33,7 +33,16 @@ const config = {
 	// ================= 站点图像 =================
 	logo: '/img/site/logo.jpg',
 	background: '/img/site/bg.jpg',
-	splashImage: '/img/site/splash.jpg',
+	splashImage: '/img/site/splash-base.jpg',
+	// 开屏幕布用的图（左右两半各切成上下梯形，像舞台幕布拉开）
+	splashDoors: '/img/site/splash-doors.jpg',
+
+	// 动态壁纸（原模板的动态壁纸）：不想用就把 enable 改成 false，会退回静态插画背景
+	wallpaperVideo: {
+		enable: true,
+		src: '/img/wallpaper/dynamic/toy-aeroplane.webm',
+		poster: '/img/site/bg.jpg'
+	},
 
 	// 每个栏目顶部的横幅
 	banners: {
@@ -143,7 +152,7 @@ const config = {
 		title: '伊甸园初遇礼',
 		subtitle: '全套神装 · 海量资源 · 开荒无忧',
 		image: '/img/site/gifts.png',
-		intro: '每一位通过审核、正式加入伊甸园的新成员，都可以领取一份初遇礼。礼包内容会随着版本更新调整，下方为当前清单。',
+		intro: '正式成员可领一份初遇礼，清单随版本调整。',
 
 		// ★★★ 以后加礼包物品就看这里 ★★★
 		// 在对应 groups 的 items 里复制一行 { ... } 改字段：
@@ -220,16 +229,58 @@ const config = {
 	//   note:  备注，比如负责的建筑或机器；没有就写 ''
 	//   color: 头像圆圈的底色，随便换个十六进制颜色即可
 	// 复制这行改改就能用：
-	// { name: '新成员', id: 'NewPlayer', role: '成员', note: '', color: '#9d8cd8' },
+	// { name: '新成员', id: 'NewPlayer', role: '成员', avatar: '/img/site/avatars/avatar-1.jpg',
+	//   uid: 'E12345', joinDate: '2026-01-01', intro: '一句话介绍', quote: 'TA 自己写的一句话', color: '#9d8cd8' },
+	// 头像是 public/img/site/avatars/ 下的图片；uid 是 E + 5 位数字，成员之间不要重复。
 	members: [
-		{ name: '楉曦', id: 'ruo_xi', role: '会长', note: '主城与金库', color: '#7a66d6' },
-		{ name: '果果', id: 'guoguo', role: '成员', note: '工业区 · 粘液科技', color: '#e58fb6' },
-		{ name: '姐姐', id: 'GamePlayer1', role: '成员', note: '刷铁机', color: '#f0a868' },
-		{ name: '基米', id: 'BiliBili', role: '成员', note: '', color: '#63b3c3' },
-		{ name: '小奈', id: 'nan_chan', role: '成员', note: '沼泽塔 · 菌类农场', color: '#9d8cd8' },
-		{ name: '鱼儿', id: 'Gakikfg', role: '成员', note: '', color: '#74c0a4' },
-		{ name: 'N', id: 'njl_141012CZ', role: '成员', note: '蜜脾农场', color: '#c79ad0' },
-		{ name: '斯怀特', id: 'swight', role: '成员', note: '', color: '#8fa4d8' }
+		{
+			name: '楉曦', id: 'ruo_xi', role: '会长', color: '#7a66d6',
+			avatar: '/img/site/avatars/avatar-1.jpg', uid: 'E47382', joinDate: '2025-09-14',
+			intro: '公会的第一块基石，主城和金库都在他名下。',
+			quote: '先把路修好，人自然会来。'
+		},
+		{
+			name: '果果', id: 'guoguo', role: '成员', color: '#e58fb6',
+			avatar: '/img/site/avatars/avatar-2.jpg', uid: 'E19064', joinDate: '2025-09-20',
+			intro: '工业区常驻，粘液科技和这个网站都是他在折腾。',
+			quote: '机器坏了就修，修不好就再造一台。'
+		},
+		{
+			name: '姐姐', id: 'GamePlayer1', role: '成员', color: '#f0a868',
+			avatar: '/img/site/avatars/avatar-3.jpg', uid: 'E82517', joinDate: '2026-03-02',
+			intro: '刷铁机厂长，产量稳定得像闹钟。',
+			quote: '铁够用就行，别堆那么多。'
+		},
+		{
+			name: '基米', id: 'BiliBili', role: '成员', color: '#63b3c3',
+			avatar: '/img/site/avatars/avatar-4.jpg', uid: 'E36049', joinDate: '2025-11-08',
+			intro: '常驻夜猫子，建筑和截图都很好看。',
+			quote: '夜里十二点的伊甸最好看。'
+		},
+		{
+			name: '小奈', id: 'nan_chan', role: '成员', color: '#9d8cd8',
+			avatar: '/img/site/avatars/avatar-5.jpg', uid: 'E91628', joinDate: '2025-10-05',
+			intro: '沼泽刷怪塔和菌类农场的主人。',
+			quote: '慢慢来，反正世界不会跑。'
+		},
+		{
+			name: '鱼儿', id: 'Gakikfg', role: '成员', color: '#74c0a4',
+			avatar: '/img/site/avatars/avatar-6.jpg', uid: 'E27450', joinDate: '2026-01-18',
+			intro: '钓鱼佬，仓库里一半是鱼。',
+			quote: '今天也没钓到好东西。'
+		},
+		{
+			name: 'N', id: 'njl_141012CZ', role: '成员', color: '#c79ad0',
+			avatar: '/img/site/avatars/avatar-7.jpg', uid: 'E63185', joinDate: '2026-02-22',
+			intro: '蜜脾农场负责人，话不多但活很细。',
+			quote: '少说话，多种树。'
+		},
+		{
+			name: '斯怀特', id: 'swight', role: '成员', color: '#8fa4d8',
+			avatar: '/img/site/avatars/avatar-8.jpg', uid: 'E50832', joinDate: '2026-05-30',
+			intro: '新加入的风景党，喜欢在山顶盖小屋。',
+			quote: '先看看风景，再决定住哪。'
+		}
 	],
 
 	// ================= 规则 =================
@@ -249,15 +300,23 @@ const config = {
 		{ date: '2026 秋', title: '公会主页上线', text: '领地、招新、成员名册整理成站，欢迎常来看看。' }
 	],
 
+	// ================= 账号 / 登录 =================
+	// guildCode：注册「名册里的名字」时需要的口令。
+	//   留空 '' = 按规则任何同名注册都直接成为公会成员（方便，但别人也能冒充名册成员）
+	//   填一个字符串 = 注册名册成员时必须输入这个口令，普通会员不受影响
+	auth: {
+		guildCode: ''
+	},
+
 	// ================= 加入流程（弹窗） =================
 	join: {
 		title: '加入伊甸园',
-		note: '满 16 岁即可申请，不强制上线时间，装备和技术都可以慢慢来。',
+		note: '满 16 岁即可申请，不强制上线时间。',
 		// 入会问卷二维码（图片放在 public/img/site/join-qr.jpg，换图直接覆盖同名文件）
 		form: {
 			title: '入会问卷',
 			qr: '/img/site/join-qr.jpg',
-			note: '扫码填写入会问卷，管理看到后会拉你进群。'
+			note: '扫码填写入会问卷'
 		},
 		steps: [
 			'扫码填写入会问卷（下方二维码）',
@@ -279,11 +338,16 @@ const config = {
 		limit: 2
 	},
 
-	// 打字机文案
+	// 首页打字机文案（多写几句，慢慢轮播）
 	typeWriterStrings: [
 		'在方块之间，种下一片不会凋谢的花园。',
 		'机器会坏，花园会开，人会一直在。',
-		'循此踏入伊甸，从此不问归途。'
+		'循此踏入伊甸，从此不问归途。',
+		'我们不是最强的公会，只是想一起把日子过成喜欢的样子。',
+		'铁可以再挖，房子可以再盖，人走了就真的走了，所以别走。',
+		'铃兰花圃的春天很长，长到足够把一座城慢慢盖完。',
+		'有人负责红石，有人负责花，有人负责在出生点等新朋友。',
+		'愿你在伊甸，找到一块属于自己的地，和一盏等你回家的灯。'
 	],
 
 	statement: ['伊甸园 Eden · 铃兰花圃 1.21.11', 'Copyright © 2026 Eden Guild']

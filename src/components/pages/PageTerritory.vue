@@ -27,11 +27,17 @@
         </button>
       </div>
 
+      <button v-if="isGuild" class="add-btn" type="button" @click="dialogAdd = true">
+        ＋ 登记领地
+      </button>
+
       <span class="counter">{{ counterText }}</span>
     </div>
 
-    <div v-if="filtered.length" class="territory-grid">
-      <article class="territory" v-for="t in filtered" :key="t.cmd + t.type">
+    <p v-if="auth.user && !isGuild" class="toolbar-hint">登记领地为公会成员权限</p>
+
+    <div v-if="filtered.length" class="territory-grid" v-reveal>
+      <article class="territory" v-for="t in filtered" :key="t.id || (t.type + t.cmd)" v-tilt>
         <div class="territory-top">
           <span class="type-tag" :class="t.type">{{ typeLabel(t.type) }}</span>
           <h3 v-html="hl(t.cmd)"></h3>
@@ -48,6 +54,8 @@
           <span class="text">/ps {{ t.cmd }}</span>
           <span class="copy">{{ copied === t.cmd ? '已复制' : '复制' }}</span>
         </button>
+
+        <button v-if="t.custom && isGuild" class="del" type="button" @click="remove(t)">删除这条登记</button>
       </article>
     </div>
 
@@ -57,18 +65,24 @@
     </div>
 
     <div class="footer">
-      <span>点击指令即可一键复制，粘贴到游戏聊天栏执行传送。</span><br />
-      <span>使用公共机器后请关机并清理掉落物，谢谢配合。</span>
+      <span>点击指令复制，粘贴到游戏聊天栏传送。</span>
     </div>
 
     <v-snackbar v-model="snackbar" :timeout="1800" location="bottom" rounded="pill">
       {{ snackText }}
     </v-snackbar>
+
+    <AddTerritoryDialog v-model="dialogAdd" @added="onAdded" />
   </div>
 </template>
 
 <script>
+import { api } from '../../lib/api.js'
+import { auth } from '../../lib/auth.js'
+import AddTerritoryDialog from '../AddTerritoryDialog.vue'
+
 export default {
+  components: { AddTerritoryDialog },
   props: {
     configdata: { type: Object, required: true }
   },
@@ -78,18 +92,27 @@ export default {
       cat: 'all',
       copied: '',
       snackbar: false,
-      snackText: ''
+      snackText: '',
+      custom: [],
+      dialogAdd: false,
+      auth
     }
   },
   computed: {
     config() {
       return this.configdata
     },
+    isGuild() {
+      return !!auth.user && auth.user.role === 'guild'
+    },
+    all() {
+      return [...this.custom, ...this.config.territories]
+    },
     terms() {
       return this.q.trim().toLowerCase().split(/\s+/).filter(Boolean)
     },
     filtered() {
-      return this.config.territories.filter(t => {
+      return this.all.filter(t => {
         if (this.cat !== 'all' && t.type !== this.cat) return false
         if (!this.terms.length) return true
         const hay = [t.cmd, t.desc, t.products || '', t.owner || ''].join(' ').toLowerCase()
@@ -97,7 +120,7 @@ export default {
       })
     },
     counterText() {
-      const total = this.config.territories.length
+      const total = this.all.length
       return this.filtered.length === total
         ? `共 ${total} 个`
         : `找到 ${this.filtered.length} 个`
@@ -111,7 +134,36 @@ export default {
       this.copied = ''
     }
   },
+  mounted() {
+    this.fetchCustom()
+  },
   methods: {
+    async fetchCustom() {
+      try {
+        const res = await api.territories()
+        this.custom = (res.items || []).map(item => ({ ...item, custom: true }))
+      } catch (e) {
+        // 接口还没配置好时不影响原有列表展示
+        this.custom = []
+      }
+    },
+    onAdded(item) {
+      this.custom.unshift({ ...item, custom: true })
+      this.snackText = `已登记：${item.cmd}`
+      this.snackbar = true
+    },
+    async remove(t) {
+      if (!window.confirm(`确定删除「${t.cmd}」这条登记吗？`)) return
+      try {
+        await api.deleteTerritory(t.id)
+        this.custom = this.custom.filter(x => x.id !== t.id)
+        this.snackText = '已删除'
+        this.snackbar = true
+      } catch (e) {
+        this.snackText = e.message || '删除失败'
+        this.snackbar = true
+      }
+    },
     typeLabel(type) {
       const hit = this.config.territoryTypes.find(t => t.key === type)
       return hit ? hit.label : '其他'
@@ -178,6 +230,40 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 14px;
+}
+
+.add-btn {
+  padding: 9px 14px;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--eden-accent), var(--eden-accent-2));
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(122, 102, 214, 0.26);
+}
+
+.add-btn:hover {
+  opacity: 0.94;
+}
+
+.toolbar-hint {
+  margin: -4px 0 12px;
+  font-size: 12px;
+  color: var(--eden-muted);
+}
+
+.del {
+  align-self: flex-start;
+  padding: 2px 0;
+  font-size: 11.5px;
+  color: #c05a7a;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline dotted;
 }
 
 @media (max-width: 640px) {

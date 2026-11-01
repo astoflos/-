@@ -1,5 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import { reveal } from './directives/reveal.js'
+import { tilt } from './directives/tilt.js'
 
 // Vuetify
 import 'vuetify/styles'
@@ -22,6 +24,7 @@ const vuetify = createVuetify({
     },
 })
 const app = createApp(App);
+app.directive('reveal', reveal)
+app.directive('tilt', tilt)
 app.config.warnHandler = () => {};
 app.use(vuetify).mount('#app')
-

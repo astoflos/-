@@ -1,6 +1,27 @@
-<template>
+﻿<template>
   <div class="eden-app">
-    <Splash v-if="showSplash" :image="configdata.splashImage" @enter="onEnter" />
+    <video
+      v-if="configdata.wallpaperVideo && configdata.wallpaperVideo.enable"
+      class="eden-bg-video"
+      :poster="configdata.wallpaperVideo.poster"
+      autoplay
+      muted
+      loop
+      playsinline
+      aria-hidden="true"
+    >
+      <source :src="configdata.wallpaperVideo.src" type="video/webm" />
+    </video>
+
+    <div class="eden-veil" aria-hidden="true"></div>
+
+    <CursorGlow />
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <SakuraLayer />
+    <ScrollProgress />
+    <Splash v-if="showSplash" :image="configdata.splashImage" :doors="configdata.splashDoors" @enter="onEnter" />
 
     <v-app>
       <div class="app-shell">
@@ -30,6 +51,20 @@
 
           <MusicPlayer v-if="configdata.music && configdata.music.enable !== false" :music="configdata.music" />
 
+          <div class="eden-user">
+            <template v-if="auth.user">
+              <span class="user-avatar" :class="auth.user.role">{{ initials(auth.user.gameName) }}</span>
+              <span class="user-meta">
+                <b>{{ auth.user.gameName }}</b>
+                <em>{{ auth.user.role === 'guild' ? '公会成员' : '会员' }}</em>
+              </span>
+              <button class="user-quit" type="button" @click="doLogout">退出</button>
+            </template>
+            <button v-else class="eden-login" type="button" @click="dialogAuth = true">
+              登录 / 注册
+            </button>
+          </div>
+
           <div class="eden-side-foot">
             <div class="eden-contacts">
               <a
@@ -51,7 +86,8 @@
 
         <main class="eden-main">
           <section class="page-banner">
-            <img :src="configdata.banners[view]" :alt="currentNav.label" />
+            <img :src="configdata.banners[view]" :alt="currentNav.label"
+              :style="{ transform: 'translateY(' + bannerShift + 'px) scale(1.06)' }" />
             <div class="banner-text">
               <span class="banner-kicker">EDEN GUILD</span>
               <h2 class="banner-title">{{ bannerTitle }}</h2>
@@ -59,7 +95,7 @@
             </div>
           </section>
 
-          <transition name="fade" mode="out-in">
+          <transition name="fade">
             <component
               :is="currentPage"
               :key="view"
@@ -71,6 +107,24 @@
           </transition>
         </main>
       </div>
+
+      <button class="settings-fab" type="button" aria-label="页面设置" @click="dialogSettings = true">
+        <v-icon size="18">mdi-palette-outline</v-icon>
+      </button>
+
+      <v-dialog v-model="dialogSettings" max-width="360">
+        <div class="dialog-card">
+          <h2 class="dialog-title">页面设置</h2>
+          <label class="field">
+            <span>背景可见度 {{ bgOpacity }}%</span>
+            <input type="range" min="0" max="100" step="1" v-model.number="bgOpacity" class="range" />
+          </label>
+          <p class="foot-note" style="text-align: left;">
+            数值越小，动态壁纸越清楚；越大，背景越淡。设置会记在这台设备上。
+          </p>
+          <button class="eden-join" type="button" style="width: 100%;" @click="resetBg">恢复默认</button>
+        </div>
+      </v-dialog>
 
       <v-dialog v-model="dialogJoin" max-width="560" scrollable>
         <div class="dialog-card">
@@ -97,6 +151,8 @@
           </button>
         </div>
       </v-dialog>
+
+      <AuthDialog v-model="dialogAuth" />
     </v-app>
   </div>
 </template>

@@ -5,3 +5,4 @@ template-original/
 .DS_Store
 Thumbs.db
 *.log
+.dev-data.json

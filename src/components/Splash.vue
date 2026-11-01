@@ -1,8 +1,8 @@
-<template>
+﻿<template>
   <div
     class="splash"
-    :class="{ 'is-leaving': leaving }"
-    :style="{ '--splash-bg': `url('${image}')` }"
+    :class="{ 'is-leaving': leaving, 'is-armed': armed }"
+    :style="{ '--splash-bg': `url('${image}')`, '--door-img': `url('${doors}')` }"
     role="button"
     tabindex="0"
     aria-label="进入伊甸园公会主页"
@@ -32,21 +32,32 @@
 export default {
   name: 'EdenSplash',
   props: {
-    image: { type: String, default: '' }
+    image: { type: String, default: '' },
+    doors: { type: String, default: '' } // 兼容旧参数，当前版本不使用
   },
   emits: ['enter'],
   data() {
-    return { leaving: false }
+    return { leaving: false, armed: false, armTimer: null }
   },
   mounted() {
     document.body.style.overflow = 'hidden'
     window.addEventListener('keydown', this.onKey)
+
+    // 刚打开时无论鼠标在哪都保持收拢；用户动一下鼠标后才允许悬停展开
+    this.armTimer = setTimeout(() => {
+      window.addEventListener('pointermove', this.onArm, { once: true, passive: true })
+    }, 400)
   },
   beforeUnmount() {
     document.body.style.overflow = ''
     window.removeEventListener('keydown', this.onKey)
+    window.removeEventListener('pointermove', this.onArm)
+    clearTimeout(this.armTimer)
   },
   methods: {
+    onArm() {
+      this.armed = true
+    },
     onKey(e) {
       if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') this.enter()
     },
@@ -102,7 +113,7 @@ export default {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  opacity: 0;
+  opacity: 0.72;
   filter: drop-shadow(4px 4px 14px rgba(0, 0, 0, 0.45));
   transition: left 0.6s ease, right 0.6s ease, opacity 0.6s ease;
   pointer-events: none;
@@ -112,7 +123,7 @@ export default {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: var(--splash-bg);
+  background-image: var(--door-img);
   background-size: cover;
   background-position: center;
   filter: brightness(0.95);
@@ -130,16 +141,16 @@ export default {
 .s4 { right: -40%; transform: rotateZ(-100deg); }
 .s4::after { transform: rotateZ(100deg); }
 
-.splash:hover .s1 { left: -58%; }
-.splash:hover .s2 { left: -66%; }
-.splash:hover .s3 { right: -59%; }
-.splash:hover .s4 { right: -67%; }
+.splash.is-armed:hover .s1 { left: -58%; }
+.splash.is-armed:hover .s2 { left: -66%; }
+.splash.is-armed:hover .s3 { right: -59%; }
+.splash.is-armed:hover .s4 { right: -67%; }
 
-.splash:hover .splash-slice {
-  opacity: 0.55;
+.splash.is-armed:hover .splash-slice {
+  opacity: 0.92;
 }
 
-/* 压一层暗角，保证文字清楚 */
+/* 暗角 + 中心压暗，保证文字清楚 */
 .splash-shade {
   position: absolute;
   inset: 0;
@@ -150,7 +161,7 @@ export default {
     linear-gradient(180deg, rgba(8, 10, 28, 0.35), rgba(8, 10, 28, 0.15) 40%, rgba(8, 10, 28, 0.45));
 }
 
-/* 文字 */
+/* 文字：没展开时完全不显示，幕布拉开的过程中逐渐浮现 */
 .splash-content {
   position: relative;
   z-index: 2;
@@ -162,6 +173,22 @@ export default {
   text-align: center;
   padding: 24px;
   pointer-events: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 1.05s ease 0.12s, transform 1.05s cubic-bezier(0.22, 0.61, 0.36, 1) 0.12s;
+}
+
+.splash.is-armed:hover .splash-content {
+  opacity: 1;
+  transform: none;
+}
+
+/* 触屏没有 hover：直接显示文字，否则进不去 */
+@media (hover: none) {
+  .splash-content {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .kicker {
@@ -170,8 +197,6 @@ export default {
   letter-spacing: 0.42em;
   text-indent: 0.42em;
   color: rgba(255, 255, 255, 0.72);
-  opacity: 0;
-  animation: riseIn 0.9s ease 0.15s forwards;
 }
 
 .title {
@@ -184,8 +209,6 @@ export default {
   text-indent: 0.14em;
   color: #f6f2ff;
   text-shadow: 0 2px 22px rgba(0, 0, 0, 0.6);
-  opacity: 0;
-  animation: riseIn 1s ease 0.3s forwards;
 }
 
 .sub {
@@ -194,20 +217,8 @@ export default {
   letter-spacing: 0.32em;
   text-indent: 0.32em;
   color: rgba(255, 255, 255, 0.6);
-  opacity: 0;
-  animation: riseIn 1s ease 0.55s forwards;
 }
 
-@keyframes riseIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 .hint {
   position: absolute;
@@ -230,23 +241,19 @@ export default {
     letter-spacing: 0.1em;
     text-indent: 0.1em;
   }
-  .sub {
-    font-size: 11px;
-  }
-  .hint {
-    bottom: 26px;
-    font-size: 11px;
-  }
+  .sub { font-size: 11px; }
+  .hint { bottom: 26px; font-size: 11px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .splash-art,
-  .kicker,
-  .title,
-  .sub,
-  .hint {
+  .splash-content {
+    transition: none;
+  }
+  .splash-art {
     animation: none;
-    opacity: 1;
+  }
+  .splash-slice {
+    transition: none;
   }
 }
 </style>

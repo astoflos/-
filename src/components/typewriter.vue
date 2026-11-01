@@ -19,10 +19,13 @@ onMounted(() => {
   if (!props.strings || !props.strings.length || !text.value) return
   inst = new TypeIt(text.value, {
     strings: props.strings,
-    speed: 85,
+    speed: 130,
     lifeLike: true,
     breakLines: false,
     loop: true,
+    startDelay: 600,
+    nextStringDelay: 2200,
+    deleteSpeed: 45,
     cursorChar: '|',
     cursor: true
   }).go()

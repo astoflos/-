@@ -1,4 +1,4 @@
-/* =========================================================================
+﻿/* =========================================================================
    伊甸园 Eden · 公会主页样式表
    -------------------------------------------------------------------------
    设计基调：粉紫浅色 + 毛玻璃卡片 + 柔和阴影
@@ -10,6 +10,11 @@
   --eden-muted: #8f87a8;
   --eden-accent: #7a66d6;
   --eden-accent-2: #ef9ac1;
+  --eden-mint: #6fd0bd;
+  --eden-peach: #ffb08c;
+  --eden-sky: #86c3ff;
+  --eden-lilac: #b7a6ff;
+  --eden-gold: #f2c46a;
   --eden-ok: #4cae87;
   --eden-card: rgba(255, 255, 255, 0.66);
   --eden-card-2: rgba(255, 255, 255, 0.82);
@@ -17,8 +22,15 @@
   --eden-line: rgba(122, 102, 214, 0.14);
   --eden-shadow: 0 12px 30px rgba(103, 84, 160, 0.13);
   --eden-shadow-sm: 0 6px 16px rgba(103, 84, 160, 0.1);
+  --eden-glow: 0 20px 44px rgba(122, 102, 214, 0.2);
   --eden-radius: 18px;
   --eden-bg: none;
+}
+
+/* app wrapper creates its own layer stack so the video can sit under the veil */
+.eden-app {
+  position: relative;
+  isolation: isolate;
 }
 
 /* ------------------------------ 基础 ------------------------------ */
@@ -38,17 +50,52 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* 背景：粉紫插画 + 白色薄纱 */
+/* 背景：粉紫插画 + 白色薄纱（缓慢漂移，像活的壁纸） */
 body::before {
   content: "";
   position: fixed;
-  inset: 0;
+  inset: -4%;
   z-index: -2;
   background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.78)),
     var(--eden-bg);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  animation: bgDrift 48s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* 彩色光晕：让底色不那么单调 */
+body::after {
+  content: "";
+  position: fixed;
+  inset: -12%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(36% 28% at 12% 16%, rgba(255, 183, 148, 0.26), transparent 70%),
+    radial-gradient(32% 26% at 88% 20%, rgba(143, 199, 255, 0.24), transparent 70%),
+    radial-gradient(40% 30% at 72% 94%, rgba(127, 209, 189, 0.22), transparent 70%);
+  filter: blur(8px);
+  animation: washFloat 30s ease-in-out infinite alternate;
+}
+
+@keyframes bgDrift {
+  from { transform: scale(1.02) translate3d(0, 0, 0); }
+  50% { transform: scale(1.07) translate3d(-1.2%, -0.9%, 0); }
+  to { transform: scale(1.04) translate3d(1%, 0.8%, 0); }
+}
+
+@keyframes washFloat {
+  from { transform: translate3d(-1.2%, -0.8%, 0) scale(1); }
+  to { transform: translate3d(1.4%, 1%, 0) scale(1.06); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after {
+    animation: none;
+  }
 }
 
 .v-application {
@@ -69,6 +116,8 @@ body::before {
   margin: 0 auto;
   padding: 26px 24px 48px;
   align-items: flex-start;
+  position: relative;
+  z-index: 2; /* 压在樱花层上面 */
 }
 
 .eden-main {
@@ -1171,6 +1220,177 @@ mark {
   color: var(--eden-muted);
 }
 
+/* 登录状态 */
+.eden-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(122, 102, 214, 0.14);
+}
+
+.eden-login {
+  width: 100%;
+  padding: 9px 10px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--eden-accent);
+  background: rgba(122, 102, 214, 0.08);
+  border: 1px dashed rgba(122, 102, 214, 0.35);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.eden-login:hover {
+  background: rgba(122, 102, 214, 0.14);
+}
+
+.user-avatar {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--eden-accent), var(--eden-accent-2));
+}
+
+.user-avatar.guild {
+  background: linear-gradient(135deg, #f0a868, #e58fb6);
+}
+
+.user-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.user-meta b {
+  font-size: 12.5px;
+  color: var(--eden-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-meta em {
+  font-style: normal;
+  font-size: 10.5px;
+  color: var(--eden-muted);
+}
+
+.user-quit {
+  flex: 0 0 auto;
+  font-family: inherit;
+  font-size: 11px;
+  color: var(--eden-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* 表单（登录 / 注册 / 领地登记） */
+.auth-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.auth-tabs button {
+  flex: 1;
+  padding: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--eden-ink-2);
+  background: rgba(122, 102, 214, 0.06);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.auth-tabs button.active {
+  color: #fff;
+  background: linear-gradient(135deg, var(--eden-accent), var(--eden-accent-2));
+}
+
+.field {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.field > span {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11.5px;
+  color: var(--eden-muted);
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 13.5px;
+  color: var(--eden-ink);
+  background: #fff;
+  border: 1px solid rgba(122, 102, 214, 0.22);
+  border-radius: 10px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: rgba(122, 102, 214, 0.55);
+  box-shadow: 0 0 0 3px rgba(122, 102, 214, 0.12);
+}
+
+.err {
+  margin: 6px 0 10px;
+  font-size: 12px;
+  color: #c0392b;
+}
+
+.hint {
+  margin: -4px 0 8px;
+  font-size: 11.5px;
+  color: var(--eden-ok);
+}
+
+.foot-note {
+  margin: 12px 0 0;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--eden-muted);
+  text-align: center;
+}
+
+/* 小标题渐变色，增加层次 */
+.section-head h2 {
+  background: linear-gradient(120deg, #4b3f6b 0%, #7a66d6 48%, #ef9ac1 95%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 1px 6px rgba(255, 255, 255, 0.95));
+}
+
+/* 横幅图片跟随滚动轻微移动（App.vue 里更新 --banner-shift） */
+.page-banner img {
+  transform: translateY(var(--banner-shift, 0px)) scale(1.06);
+  will-change: transform;
+}
+
 /* ------------------------------ 动效 ------------------------------ */
 .fade-enter-active,
 .fade-leave-active {
@@ -1188,4 +1408,429 @@ mark {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }
+}
+
+/* =========================================================================
+   视觉增强：滚动浮现 / 悬停光边 / 按钮流光 / 横幅扫光 / 配色点缀
+   ========================================================================= */
+
+/* 滚动进入视口时浮现 */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px) scale(0.99);
+  transition: opacity 0.75s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* 卡片统一：悬浮上移 + 柔光 + 渐变描边 */
+.card,
+.territory,
+.member,
+.item,
+.notice,
+.quick,
+.stat {
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 0.4s ease,
+    border-color 0.4s ease;
+}
+
+.card:hover,
+.territory:hover,
+.member:hover,
+.item:hover,
+.notice:hover,
+.quick:hover,
+.stat:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--eden-glow);
+}
+
+.territory::after,
+.quick::after,
+.member::after,
+.item::after,
+.notice::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.96),
+    rgba(183, 166, 255, 0.55),
+    rgba(255, 176, 140, 0.5),
+    rgba(111, 208, 189, 0.5)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.territory:hover::after,
+.quick:hover::after,
+.member:hover::after,
+.item:hover::after,
+.notice:hover::after {
+  opacity: 1;
+}
+
+/* 按钮：流光扫过 */
+.eden-join,
+.add-btn,
+.eden-login {
+  position: relative;
+  overflow: hidden;
+}
+
+.eden-join::after,
+.add-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 65%
+  );
+  transform: translateX(-130%);
+  transition: transform 0.75s ease;
+  pointer-events: none;
+}
+
+.eden-join:hover::after,
+.add-btn:hover::after {
+  transform: translateX(130%);
+}
+
+/* 导航：轻微右移 + 图标呼吸 */
+.eden-nav button {
+  transition: background 0.2s ease, color 0.2s ease, transform 0.25s ease;
+}
+
+.eden-nav button:hover {
+  transform: translateX(3px);
+}
+
+.eden-nav button.active .v-icon {
+  animation: navPulse 2.6s ease-in-out infinite;
+}
+
+@keyframes navPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+
+/* Logo 轻轻浮动 */
+.eden-logo {
+  animation: logoFloat 6s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* 首页大卡与时钟：更柔和的层次 */
+.hero-card {
+  background-image: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.92),
+    rgba(255, 245, 252, 0.86) 42%,
+    rgba(240, 247, 255, 0.9)
+  );
+}
+
+.clock-card {
+  background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(244, 239, 255, 0.86));
+}
+
+.clock-time {
+  text-shadow: 0 2px 16px rgba(122, 102, 214, 0.22);
+}
+
+/* 统计数字四种颜色，别太单调 */
+.stat:nth-child(4n + 1) b { color: var(--eden-accent); }
+.stat:nth-child(4n + 2) b { color: var(--eden-sky); }
+.stat:nth-child(4n + 3) b { color: var(--eden-mint); }
+.stat:nth-child(4n + 4) b { color: var(--eden-peach); }
+
+/* 小标题前的小竖条缓慢流动 */
+.section-head .bar {
+  background-size: 200% 200%;
+  animation: barShift 6s linear infinite;
+}
+
+@keyframes barShift {
+  to { background-position: 200% 0; }
+}
+
+/* 横幅：一道扫光 + 顶部柔光 */
+.page-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 28%,
+    rgba(255, 255, 255, 0.38) 45%,
+    transparent 62%
+  );
+  transform: translateX(-120%);
+  animation: bannerSheen 11s ease-in-out infinite;
+}
+
+@keyframes bannerSheen {
+  0%, 68% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+
+/* 招新大图：悬停轻微放大 + 彩色光边 */
+.recruit-hero img {
+  transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 0.6s ease;
+}
+
+.recruit-hero img:hover {
+  transform: scale(1.025) rotate(-0.5deg);
+  box-shadow: 0 18px 42px rgba(122, 102, 214, 0.3);
+}
+
+/* 成员头像悬停 */
+.member .avatar {
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.member:hover .avatar {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 22px rgba(122, 102, 214, 0.3);
+}
+
+/* 进度条 / 输入框焦点更明显 */
+.search input:focus {
+  box-shadow: 0 0 0 4px rgba(183, 166, 255, 0.25);
+}
+
+/* 页面切换：带一点模糊与位移 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 0.45s ease;
+}
+
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(14px);
+  filter: blur(6px);
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+  filter: blur(6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .eden-logo,
+  .page-banner::before,
+  .section-head .bar,
+  .eden-nav button.active .v-icon {
+    animation: none;
+  }
+}
+
+/* =========================================================================
+   Layer 3: dynamic wallpaper / orbs / grain / marquee / 3D tilt
+   ========================================================================= */
+
+.eden-bg-video {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+  filter: brightness(1.34) saturate(1.28) sepia(0.16) hue-rotate(-12deg);
+}
+
+.eden-veil {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: var(--veil-opacity, 1);
+  background: radial-gradient(
+    ellipse at 50% 38%,
+    rgba(255, 244, 250, 0.52) 0%,
+    rgba(248, 240, 255, 0.4) 50%,
+    rgba(239, 245, 255, 0.26) 100%
+  );
+  -webkit-backdrop-filter: blur(3px) saturate(1.1);
+  backdrop-filter: blur(3px) saturate(1.1);
+}
+
+html.has-bg-video .eden-veil {
+  display: block;
+  animation: veilBreath 34s ease-in-out infinite alternate;
+}
+
+@keyframes veilBreath {
+  from { opacity: 0.92; }
+  to { opacity: 1; }
+}
+
+/* soft color orbs */
+.orb {
+  position: fixed;
+  z-index: 1;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(42px);
+  opacity: 0.55;
+}
+
+.orb-1 {
+  width: 320px;
+  height: 320px;
+  top: 6%;
+  left: 4%;
+  background: rgba(255, 176, 140, 0.34);
+  animation: orbFloat 23s ease-in-out infinite alternate;
+}
+
+.orb-2 {
+  width: 280px;
+  height: 280px;
+  top: 52%;
+  right: 6%;
+  background: rgba(134, 195, 255, 0.3);
+  animation: orbFloat 29s ease-in-out infinite alternate-reverse;
+}
+
+.orb-3 {
+  width: 240px;
+  height: 240px;
+  bottom: 4%;
+  left: 40%;
+  background: rgba(111, 208, 189, 0.26);
+  animation: orbFloat 34s ease-in-out infinite alternate;
+}
+
+@keyframes orbFloat {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(34px, -26px, 0) scale(1.14); }
+}
+
+/* film grain */
+.eden-app::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+  opacity: 0.055;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* section titles wipe in */
+.reveal .section-head h2 {
+  clip-path: inset(0 100% 0 0);
+}
+
+.reveal.is-visible .section-head h2 {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) 0.12s;
+}
+
+/* 3D tilt + pointer highlight */
+.tilt {
+  transform-style: preserve-3d;
+  transition: transform 0.28s ease, box-shadow 0.35s ease;
+}
+
+.tilt::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    220px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.55),
+    transparent 62%
+  );
+}
+
+.tilt:hover::before {
+  opacity: 1;
+}
+
+.tilt > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb,
+  .eden-app::after {
+    animation: none;
+  }
+}
+
+/* 页面设置按钮 */
+.settings-fab {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 50;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--eden-accent);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  box-shadow: 0 10px 24px rgba(103, 84, 160, 0.22);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: transform 0.4s ease, box-shadow 0.3s ease;
+}
+
+.settings-fab:hover {
+  transform: rotate(90deg) translateY(-2px);
+  box-shadow: 0 14px 30px rgba(103, 84, 160, 0.3);
+}
+
+.range {
+  width: 100%;
+  accent-color: var(--eden-accent);
 }
