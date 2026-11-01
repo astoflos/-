@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <section class="recruit-hero" v-reveal>
       <div>
@@ -35,7 +35,7 @@
 
           <div class="fold-body" :class="{ open: isOpen(gi) }">
             <div class="fold-inner">
-              <div class="grid" :class="group.items.length > 8 ? 'grid-4' : 'grid-3'">
+              <div class="grid item-grid" :class="group.items.length > 8 ? 'grid-4' : 'grid-3'">
                 <article class="item" v-for="item in group.items" :key="item.name">
                   <div class="item-top">
                     <h4 :class="{ gold: isGoldName(item) }">{{ item.name }}</h4>

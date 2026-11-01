@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <div class="section-head" style="margin-top: 0;">
       <i class="bar"></i>
@@ -6,7 +6,7 @@
       <span>共 {{ config.members.length }} 人 · 点击名片查看</span>
     </div>
 
-    <div class="grid grid-4" v-reveal>
+    <div class="grid grid-4 member-grid" v-reveal>
       <article
         class="member"
         v-for="m in config.members"

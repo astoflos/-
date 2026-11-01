@@ -235,6 +235,18 @@ export default {
   50% { transform: translateY(-4px); opacity: 0.9; }
 }
 
+/* 手机 / 平板：去掉碎裂层，文字常显，避免缩在中间 */
+@media (max-width: 900px) {
+  .splash-slice {
+    display: none;
+  }
+
+  .splash-content {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 @media (max-width: 640px) {
   .title {
     font-size: 32px;

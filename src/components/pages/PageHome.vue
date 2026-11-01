@@ -61,7 +61,7 @@
         <h2>逛一逛</h2>
         <span>QUICK LINKS</span>
       </div>
-      <div class="grid grid-3">
+      <div class="grid grid-3 quick-grid">
         <button class="quick" type="button" v-tilt @click="$emit('navigate', 'territory')">
           <span class="quick-ico"><v-icon size="20">mdi-map-marker-radius-outline</v-icon></span>
           <span>
