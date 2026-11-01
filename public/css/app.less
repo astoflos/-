@@ -1,0 +1,1191 @@
+/* =========================================================================
+   伊甸园 Eden · 公会主页样式表
+   -------------------------------------------------------------------------
+   设计基调：粉紫浅色 + 毛玻璃卡片 + 柔和阴影
+   ========================================================================= */
+
+:root {
+  --eden-ink: #332c4d;
+  --eden-ink-2: #5b5379;
+  --eden-muted: #8f87a8;
+  --eden-accent: #7a66d6;
+  --eden-accent-2: #ef9ac1;
+  --eden-ok: #4cae87;
+  --eden-card: rgba(255, 255, 255, 0.66);
+  --eden-card-2: rgba(255, 255, 255, 0.82);
+  --eden-border: rgba(255, 255, 255, 0.9);
+  --eden-line: rgba(122, 102, 214, 0.14);
+  --eden-shadow: 0 12px 30px rgba(103, 84, 160, 0.13);
+  --eden-shadow-sm: 0 6px 16px rgba(103, 84, 160, 0.1);
+  --eden-radius: 18px;
+  --eden-bg: none;
+}
+
+/* ------------------------------ 基础 ------------------------------ */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: #f7f4ff;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei",
+    "Helvetica Neue", Arial, sans-serif;
+  color: var(--eden-ink);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 背景：粉紫插画 + 白色薄纱 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.78)),
+    var(--eden-bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.v-application {
+  background: transparent !important;
+  font-family: inherit !important;
+}
+
+.v-application__wrap {
+  min-height: 100vh;
+}
+
+/* ------------------------------ 布局 ------------------------------ */
+.app-shell {
+  display: flex;
+  width: 100%;
+  gap: 24px;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 26px 24px 48px;
+  align-items: flex-start;
+}
+
+.eden-main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ------------------------------ 侧栏 ------------------------------ */
+.eden-side {
+  position: sticky;
+  top: 26px;
+  flex: 0 0 262px;
+  width: 262px;
+  padding: 22px 18px 18px;
+  border-radius: 24px;
+  background: var(--eden-card-2);
+  border: 1px solid var(--eden-border);
+  box-shadow: var(--eden-shadow);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+  text-align: center;
+}
+
+.eden-logo {
+  width: 74px;
+  height: 74px;
+  border-radius: 22px;
+  object-fit: cover;
+  background: #fff;
+  border: 3px solid #fff;
+  box-shadow: 0 8px 20px rgba(122, 102, 214, 0.22);
+}
+
+.eden-title {
+  margin: 12px 0 2px;
+  font-family: "myfont", "STXingkai", "华文行楷", cursive;
+  font-size: 30px;
+  line-height: 1.1;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--eden-ink);
+}
+
+.eden-title span {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 20px;
+  letter-spacing: 0.22em;
+  color: var(--eden-accent);
+}
+
+.eden-sub {
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: var(--eden-muted);
+  letter-spacing: 0.02em;
+}
+
+.eden-motto {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--eden-accent);
+  opacity: 0.85;
+}
+
+/* 导航 */
+.eden-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 18px 0 6px;
+  text-align: left;
+}
+
+.eden-nav button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--eden-ink-2);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.eden-nav button:hover {
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--eden-ink);
+}
+
+.eden-nav button.active {
+  color: var(--eden-accent);
+  font-weight: 700;
+  background: linear-gradient(135deg, rgba(122, 102, 214, 0.14), rgba(239, 154, 193, 0.18));
+  border-color: rgba(122, 102, 214, 0.28);
+}
+
+.eden-nav .v-icon {
+  opacity: 0.9;
+}
+
+/* 联系方式 */
+.eden-contacts {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--eden-line);
+  text-align: left;
+}
+
+.contact-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 4px;
+  font-size: 12.5px;
+  color: var(--eden-ink-2);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+
+a.contact-row:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.contact-row .v-icon {
+  color: var(--eden-accent);
+  opacity: 0.85;
+}
+
+.contact-row span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contact-row em {
+  margin-left: auto;
+  font-style: normal;
+  color: var(--eden-muted);
+  font-size: 11.5px;
+}
+
+/* 侧栏底部按钮 */
+.eden-join {
+  width: 100%;
+  margin-top: 14px;
+  padding: 11px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--eden-accent), var(--eden-accent-2));
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(122, 102, 214, 0.28);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.eden-join:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(122, 102, 214, 0.34);
+}
+
+.eden-join:active {
+  transform: translateY(0);
+}
+
+/* ------------------------------ 页面横幅 ------------------------------ */
+.page-banner {
+  position: relative;
+  height: 190px;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: var(--eden-shadow);
+  margin-bottom: 22px;
+}
+
+.page-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.page-banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.72));
+}
+
+.banner-text {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: 16px;
+  z-index: 1;
+}
+
+.banner-kicker {
+  display: inline-block;
+  margin-bottom: 6px;
+  padding: 3px 9px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--eden-accent);
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 999px;
+}
+
+.banner-title {
+  margin: 0;
+  font-family: "myfont", "STXingkai", "华文行楷", cursive;
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: 0.05em;
+  color: var(--eden-ink);
+  text-shadow: 0 2px 12px rgba(255, 255, 255, 0.9);
+}
+
+.banner-sub {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--eden-ink-2);
+}
+
+/* ------------------------------ 通用卡片 ------------------------------ */
+.card {
+  padding: 18px;
+  background: var(--eden-card-2);
+  border: 1px solid var(--eden-border);
+  border-radius: var(--eden-radius);
+  box-shadow: var(--eden-shadow-sm);
+  -webkit-backdrop-filter: blur(14px) saturate(135%);
+  backdrop-filter: blur(14px) saturate(135%);
+}
+
+.card-title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: var(--eden-ink);
+}
+
+.card-sub {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: var(--eden-muted);
+}
+
+.section {
+  margin-top: 26px;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.section-head .bar {
+  width: 4px;
+  height: 16px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--eden-accent), var(--eden-accent-2));
+}
+
+.section-head h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.section-head span {
+  font-size: 12px;
+  color: var(--eden-muted);
+  margin-left: 2px;
+}
+
+.section-head .more {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--eden-accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+
+.links {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--eden-accent);
+  text-decoration: none;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* 网格 */
+.grid {
+  display: grid;
+  gap: 14px;
+}
+
+.grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+/* 标签 */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  font-size: 11.5px;
+  color: var(--eden-ink-2);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(122, 102, 214, 0.16);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.tag.solid {
+  color: #fff;
+  background: linear-gradient(135deg, var(--eden-accent), var(--eden-accent-2));
+  border-color: transparent;
+}
+
+/* 数字 */
+.stat-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  flex: 1 1 0;
+  min-width: 90px;
+  padding: 12px 14px;
+  text-align: center;
+  background: var(--eden-card);
+  border: 1px solid var(--eden-border);
+  border-radius: 14px;
+  box-shadow: var(--eden-shadow-sm);
+}
+
+.stat b {
+  display: block;
+  font-size: 22px;
+  line-height: 1.1;
+  color: var(--eden-accent);
+}
+
+.stat span {
+  font-size: 11.5px;
+  color: var(--eden-muted);
+}
+
+/* ------------------------------ 首页 ------------------------------ */
+.hero-card {
+  position: relative;
+  overflow: hidden;
+  padding: 24px;
+  border-radius: 24px;
+  background: var(--eden-card-2);
+  border: 1px solid var(--eden-border);
+  box-shadow: var(--eden-shadow);
+}
+
+.hero-quote {
+  margin: 0 0 6px;
+  font-family: "myfont", "STXingkai", "华文行楷", cursive;
+  font-size: 26px;
+  color: var(--eden-accent);
+}
+
+/* 首页大卡片：左边内容 + 右边时间卡 */
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 232px;
+  gap: 18px;
+  align-items: center;
+}
+
+.hero-main {
+  min-width: 0;
+}
+
+.clock-card {
+  padding: 18px 14px;
+  text-align: center;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 18px rgba(103, 84, 160, 0.08);
+}
+
+.clock-time {
+  margin: 0;
+  font-family: "digitalfont", monospace;
+  font-size: 30px;
+  line-height: 1.1;
+  letter-spacing: 1px;
+  color: var(--eden-accent);
+}
+
+.clock-date {
+  margin: 8px 0 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--eden-ink-2);
+}
+
+.clock-sub {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: var(--eden-muted);
+}
+
+.hero-intro {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--eden-ink-2);
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+/* 公告 */
+.notice {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--eden-card-2);
+  border: 1px solid var(--eden-border);
+  border-radius: 16px;
+  box-shadow: var(--eden-shadow-sm);
+}
+
+.notice-date {
+  flex: 0 0 88px;
+  font-size: 12px;
+  color: var(--eden-muted);
+  padding-top: 2px;
+}
+
+.notice-body h3 {
+  margin: 0 0 4px;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--eden-ink);
+}
+
+.notice-body p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--eden-ink-2);
+}
+
+.notice-tag {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 1px 6px;
+  font-size: 10.5px;
+  color: var(--eden-accent);
+  background: rgba(122, 102, 214, 0.1);
+  border-radius: 4px;
+}
+
+/* 快捷入口 */
+.quick {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  text-align: left;
+  background: var(--eden-card-2);
+  border: 1px solid var(--eden-border);
+  border-radius: 16px;
+  box-shadow: var(--eden-shadow-sm);
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.quick:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--eden-shadow);
+}
+
+.quick-ico {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--eden-accent), var(--eden-accent-2));
+}
+
+.quick h3 {
+  margin: 0 0 2px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.quick p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--eden-muted);
+}
+
+/* ------------------------------ 领地页 ------------------------------ */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.search {
+  position: relative;
+  flex: 1 1 240px;
+  min-width: 200px;
+}
+
+.search input {
+  width: 100%;
+  padding: 11px 34px 11px 36px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--eden-ink);
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(122, 102, 214, 0.2);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.search input::placeholder {
+  color: #a9a2bd;
+}
+
+.search input:focus {
+  border-color: rgba(122, 102, 214, 0.55);
+  box-shadow: 0 0 0 4px rgba(122, 102, 214, 0.12);
+}
+
+.search .v-icon {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--eden-accent);
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.search .clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--eden-muted);
+  background: rgba(122, 102, 214, 0.1);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.filters {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.filter {
+  padding: 8px 13px;
+  font-size: 12.5px;
+  font-family: inherit;
+  color: var(--eden-ink-2);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(122, 102, 214, 0.18);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.filter:hover {
+  background: #fff;
+}
+
+.filter.active {
+  color: #fff;
+  background: linear-gradient(135deg, var(--eden-accent), var(--eden-accent-2));
+  border-color: transparent;
+  box-shadow: 0 6px 14px rgba(122, 102, 214, 0.26);
+}
+
+.counter {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--eden-muted);
+}
+
+.territory {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  background: var(--eden-card-2);
+  border: 1px solid var(--eden-border);
+  border-radius: 16px;
+  box-shadow: var(--eden-shadow-sm);
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.territory:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--eden-shadow);
+}
+
+.territory-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.type-tag {
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 6px;
+}
+
+.type-tag.building { color: #a15c1f; background: #fdf0d8; border: 1px solid #f6dcae; }
+.type-tag.private { color: #5b46b8; background: #eee9fb; border: 1px solid #d8cff5; }
+.type-tag.public { color: #1f7a68; background: #e6f7f1; border: 1px solid #bfe9da; }
+
+.territory h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--eden-ink);
+  word-break: break-word;
+}
+
+.territory .desc {
+  margin: 0;
+  font-size: 13px;
+  color: var(--eden-ink-2);
+}
+
+.territory .owner {
+  margin-left: auto;
+  font-size: 11.5px;
+  color: var(--eden-muted);
+}
+
+.products {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #1f7a68;
+  background: rgba(76, 174, 135, 0.09);
+  border: 1px solid rgba(76, 174, 135, 0.22);
+  border-radius: 10px;
+}
+
+.products b {
+  flex: 0 0 auto;
+  padding: 1px 6px;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #fff;
+  background: var(--eden-ok);
+  border-radius: 4px;
+}
+
+.cmd {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 2px;
+  padding: 8px 8px 8px 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  color: var(--eden-accent);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(122, 102, 214, 0.28);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.cmd:hover {
+  background: #fff;
+  border-color: rgba(122, 102, 214, 0.5);
+}
+
+.cmd .text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.cmd .copy {
+  flex: 0 0 auto;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  font-family: inherit;
+  font-weight: 700;
+  color: #fff;
+  background: var(--eden-accent);
+  border-radius: 6px;
+}
+
+.cmd.copied {
+  border-color: rgba(76, 174, 135, 0.55);
+}
+
+.cmd.copied .copy {
+  background: var(--eden-ok);
+}
+
+mark {
+  padding: 0 2px;
+  color: #7a4b12;
+  background: #fdeeb0;
+  border-radius: 3px;
+}
+
+.empty-box {
+  padding: 56px 20px;
+  text-align: center;
+  color: var(--eden-muted);
+  background: var(--eden-card);
+  border: 1px dashed rgba(122, 102, 214, 0.28);
+  border-radius: 16px;
+}
+
+.empty-box strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 15px;
+  color: var(--eden-ink-2);
+}
+
+/* ------------------------------ 招新页 ------------------------------ */
+.recruit-hero {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 18px;
+  align-items: center;
+  padding: 20px;
+  border-radius: 22px;
+  background: var(--eden-card-2);
+  border: 1px solid var(--eden-border);
+  box-shadow: var(--eden-shadow);
+}
+
+.recruit-hero img {
+  width: 100%;
+  border-radius: 14px;
+  display: block;
+  border: 1px solid rgba(122, 102, 214, 0.18);
+  background: #fff;
+}
+
+.recruit-title {
+  margin: 0 0 4px;
+  font-family: "myfont", "STXingkai", "华文行楷", cursive;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--eden-accent);
+}
+
+.recruit-sub {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: var(--eden-muted);
+}
+
+.item {
+  padding: 12px;
+  background: var(--eden-card-2);
+  border: 1px solid var(--eden-border);
+  border-radius: 14px;
+  box-shadow: var(--eden-shadow-sm);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.item:hover {
+  border-color: rgba(122, 102, 214, 0.35);
+  box-shadow: var(--eden-shadow);
+}
+
+.item h4 {
+  margin: 0 0 2px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--eden-ink);
+  word-break: break-word;
+}
+
+.item .qty {
+  margin-bottom: 6px;
+  padding-bottom: 5px;
+  font-size: 11.5px;
+  color: var(--eden-accent);
+  border-bottom: 1px dashed var(--eden-line);
+}
+
+.item ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--eden-ink-2);
+}
+
+.item li.gold {
+  color: #c47a12;
+  font-weight: 700;
+}
+
+.item .note {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--eden-muted);
+}
+
+/* ------------------------------ 成员页 ------------------------------ */
+.member {
+  padding: 16px;
+  text-align: center;
+  background: var(--eden-card-2);
+  border: 1px solid var(--eden-border);
+  border-radius: 16px;
+  box-shadow: var(--eden-shadow-sm);
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.member:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--eden-shadow);
+}
+
+.member .avatar {
+  width: 62px;
+  height: 62px;
+  margin: 0 auto 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 6px 14px rgba(103, 84, 160, 0.2);
+}
+
+.member h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.member .id {
+  margin: 2px 0 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11.5px;
+  color: var(--eden-muted);
+}
+
+.member .role {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 11px;
+  color: var(--eden-accent);
+  background: rgba(122, 102, 214, 0.1);
+  border-radius: 999px;
+}
+
+.member .note {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: var(--eden-muted);
+}
+
+.member.is-leader {
+  border-color: rgba(122, 102, 214, 0.4);
+  box-shadow: 0 10px 24px rgba(122, 102, 214, 0.18);
+}
+
+/* ------------------------------ 关于页 ------------------------------ */
+.rule {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--eden-ink-2);
+  border-bottom: 1px dashed var(--eden-line);
+}
+
+.rule:last-child {
+  border-bottom: none;
+}
+
+.rule .idx {
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--eden-accent);
+  background: rgba(122, 102, 214, 0.12);
+  border-radius: 50%;
+}
+
+.timeline {
+  padding-left: 6px;
+}
+
+.tl {
+  position: relative;
+  padding: 0 0 16px 18px;
+  border-left: 2px solid rgba(122, 102, 214, 0.2);
+}
+
+.tl:last-child {
+  border-left-color: transparent;
+  padding-bottom: 0;
+}
+
+.tl::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--eden-accent), var(--eden-accent-2));
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9);
+}
+
+.tl time {
+  font-size: 11.5px;
+  color: var(--eden-muted);
+}
+
+.tl h4 {
+  margin: 2px 0 3px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.tl p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--eden-ink-2);
+}
+
+/* ------------------------------ 页脚 ------------------------------ */
+.footer {
+  margin-top: 30px;
+  padding: 16px 0 4px;
+  text-align: center;
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: var(--eden-muted);
+}
+
+/* ------------------------------ 弹窗 ------------------------------ */
+.dialog-card {
+  padding: 22px;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(60, 44, 110, 0.3);
+}
+
+.dialog-card h2 {
+  margin: 0 0 4px;
+  font-family: "myfont", "STXingkai", "华文行楷", cursive;
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--eden-accent);
+}
+
+.dialog-card .note {
+  margin: 0 0 14px;
+  font-size: 12.5px;
+  color: var(--eden-muted);
+}
+
+.dialog-step {
+  display: flex;
+  gap: 10px;
+  padding: 9px 0;
+  font-size: 13px;
+  color: var(--eden-ink-2);
+  border-bottom: 1px dashed var(--eden-line);
+}
+
+.dialog-step:last-child {
+  border-bottom: none;
+}
+
+.dialog-step .num {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--eden-accent);
+  border-radius: 50%;
+}
+
+/* 弹窗里的问卷二维码 */
+.dialog-qr {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 10px;
+  background: rgba(122, 102, 214, 0.06);
+  border: 1px dashed rgba(122, 102, 214, 0.3);
+  border-radius: 12px;
+}
+
+.dialog-qr img {
+  flex: 0 0 96px;
+  width: 96px;
+  height: 96px;
+  padding: 4px;
+  background: #fff;
+  border-radius: 10px;
+  display: block;
+}
+
+.dialog-qr-text strong {
+  display: block;
+  font-size: 13px;
+  color: var(--eden-ink);
+}
+
+.dialog-qr-text p {
+  margin: 4px 0 0;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--eden-muted);
+}
+
+/* ------------------------------ 动效 ------------------------------ */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

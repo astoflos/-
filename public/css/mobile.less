@@ -1,0 +1,317 @@
+/* =========================================================================
+   移动端 / 小屏适配
+   ========================================================================= */
+
+/* 平板及以下：侧栏收成顶部卡片 */
+@media (max-width: 980px) {
+  .app-shell {
+    flex-direction: column;
+    gap: 16px;
+    padding: 14px 14px 32px;
+  }
+
+  .eden-side {
+    position: static;
+    width: 100%;
+    flex: none;
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    grid-template-areas:
+      "logo head"
+      "nav  nav"
+      "music music"
+      "foot foot";
+    gap: 10px 12px;
+    padding: 14px;
+    border-radius: 20px;
+    text-align: left;
+  }
+
+  /* 侧栏里的播放器占一整行 */
+  .eden-side .music {
+    grid-area: music;
+  }
+
+  .eden-logo {
+    grid-area: logo;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+  }
+
+  .eden-side-head {
+    grid-area: head;
+    min-width: 0;
+  }
+
+  .eden-title {
+    margin: 0;
+    font-size: 22px;
+  }
+
+  .eden-title span {
+    font-size: 15px;
+  }
+
+  .eden-sub,
+  .eden-motto {
+    font-size: 11px;
+  }
+
+  .eden-nav {
+    grid-area: nav;
+    flex-direction: row;
+    gap: 6px;
+    margin: 2px 0 0;
+    padding-bottom: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .eden-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .eden-nav button {
+    flex: 0 0 auto;
+    width: auto;
+    padding: 8px 12px;
+    font-size: 12.5px;
+    white-space: nowrap;
+    border-color: rgba(122, 102, 214, 0.14);
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  .eden-side-foot {
+    grid-area: foot;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .eden-contacts {
+    flex: 1;
+    margin: 0;
+    padding: 0;
+    border-top: none;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .contact-row {
+    padding: 3px 0;
+    font-size: 11.5px;
+  }
+
+  .contact-row em {
+    display: none;
+  }
+
+  .eden-join {
+    width: auto;
+    margin: 0;
+    padding: 8px 14px;
+    font-size: 12.5px;
+    white-space: nowrap;
+  }
+
+  /* 内容区 */
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .clock-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 10px 12px;
+  }
+
+  .clock-time {
+    font-size: 22px;
+  }
+
+  .clock-date {
+    margin: 0;
+    font-size: 11.5px;
+  }
+
+  .clock-sub {
+    display: none;
+  }
+
+  .page-banner {
+    height: 150px;
+    border-radius: 18px;
+    margin-bottom: 16px;
+  }
+
+  .banner-title {
+    font-size: 26px;
+  }
+
+  .banner-text {
+    left: 16px;
+    right: 16px;
+    bottom: 12px;
+  }
+
+  .grid-4,
+  .grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .recruit-hero {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .recruit-hero .hero-media {
+    order: -1;
+  }
+
+  .toolbar {
+    gap: 8px;
+  }
+
+  .counter {
+    width: 100%;
+    margin-left: 0;
+    text-align: right;
+  }
+}
+
+/* 手机 */
+@media (max-width: 640px) {
+  .app-shell {
+    padding: 10px 10px 28px;
+  }
+
+  .eden-side {
+    grid-template-columns: 44px 1fr;
+    padding: 12px;
+    gap: 8px 10px;
+  }
+
+  .eden-logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+  }
+
+  .eden-title {
+    font-size: 19px;
+  }
+
+  .eden-motto {
+    display: none;
+  }
+
+  .eden-nav button {
+    padding: 7px 10px;
+    font-size: 12px;
+  }
+
+  .eden-nav .v-icon {
+    display: none;
+  }
+
+  .eden-sub {
+    font-size: 10.5px;
+  }
+
+  .page-banner {
+    height: 118px;
+  }
+
+  .banner-kicker {
+    font-size: 10px;
+    padding: 2px 7px;
+  }
+
+  .banner-title {
+    font-size: 21px;
+  }
+
+  .banner-sub {
+    font-size: 11.5px;
+  }
+
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .card,
+  .hero-card,
+  .territory,
+  .item {
+    padding: 14px;
+  }
+
+  .hero-quote {
+    font-size: 21px;
+  }
+
+  .hero-intro {
+    font-size: 13px;
+  }
+
+  .stat {
+    min-width: 74px;
+    padding: 10px 8px;
+  }
+
+  .stat b {
+    font-size: 18px;
+  }
+
+  .notice {
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 14px;
+  }
+
+  .notice-date {
+    flex: none;
+    padding: 0;
+  }
+
+  .quick {
+    padding: 12px;
+  }
+
+  .toolbar .filters {
+    width: 100%;
+  }
+
+  .filter {
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 7px 8px;
+    font-size: 12px;
+  }
+
+  .territory .owner {
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+
+  .recruit-title {
+    font-size: 23px;
+  }
+
+  .dialog-card {
+    padding: 16px;
+  }
+
+  .footer {
+    margin-top: 22px;
+    font-size: 11px;
+  }
+}

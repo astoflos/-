@@ -1,0 +1,51 @@
+@font-face {
+    font-family: "myfont";
+    src: url("../fonts/faken.ttf");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "digitalfont";
+    src: url("../fonts/Digital-Play-Italic-St-1.ttf");
+    font-display: swap;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    background-color: #f7f4ff;
+}
+
+/* 细滚动条 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(122, 102, 214, 0.28);
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(122, 102, 214, 0.45);
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::selection {
+    color: #fff;
+    background: rgba(122, 102, 214, 0.55);
+}
+
+.v-selection-control-group {
+    justify-content: center;
+}
+
+.v-snackbar__content {
+    text-align: center !important;
+}
