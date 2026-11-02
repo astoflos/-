@@ -378,6 +378,12 @@ const config = {
 			avatar: '/img/site/avatars/avatar-11.jpg', uid: 'E46322', joinDate: '2026-09-28',
 			intro: '只是一个透明人。',
 			quote: 'Tiger-Modell, ich kümmere mich darum.'
+		},
+		{
+			name: '楉夕', id: 'ruo_xiao_xi', role: '成员', color: '#c9b471',
+			avatar: '/img/site/avatars/avatar-12.jpg', uid: 'E92331', joinDate: '2026-10-04',
+			intro: '楉曦的妹妹——还是姐姐？。',
+			quote: '效率至上，我就是最优解。'
 		}
 	],
 
