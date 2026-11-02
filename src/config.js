@@ -384,6 +384,12 @@ const config = {
 			avatar: '/img/site/avatars/avatar-12.jpg', uid: 'E92331', joinDate: '2026-10-04',
 			intro: '楉曦的妹妹——还是姐姐？。',
 			quote: '效率至上，我就是最优解。'
+		},
+		{
+			name: 'ff', id: 'ffesyu', role: '成员', color: '#c9b471',
+			avatar: '/img/site/avatars/avatar-13.jpg', uid: 'E27652', joinDate: '2026-11-02',
+			intro: '很悠闲，成天瞎逛，不知道干啥，有好玩事喊我一个。',
+			quote: '最彩笔。'
 		}
 	],
 
