@@ -42,6 +42,7 @@ export default {
       dialogJoin: false,
       dialogAuth: false,
       dialogSettings: false,
+      navOpen: false,
       eggOpen: false,
       bgOpacity: 100,
       date: '',
@@ -235,6 +236,7 @@ export default {
     },
 
     go(key) {
+      this.navOpen = false
       this.view = key
       if (location.hash !== '#' + key) {
         location.hash = key

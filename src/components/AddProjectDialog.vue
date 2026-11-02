@@ -1,6 +1,6 @@
-<template>
+﻿<template>
   <v-dialog :model-value="modelValue" max-width="560" scrollable @update:model-value="$emit('update:modelValue', $event)">
-    <div class="dialog-card">
+    <div class="dialog-card dialog-scroll">
       <h2 class="dialog-title">申报项目</h2>
       <p class="dialog-tip">
         报一笔要花多少钱、要什么材料，方便大家一起看。<br />

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <v-dialog :model-value="modelValue" max-width="720" @update:model-value="$emit('update:modelValue', $event)">
     <div class="auth-shell" :class="{ 'is-register': mode === 'register' }">
       <!-- 滑动的表单卡片 -->

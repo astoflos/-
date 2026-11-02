@@ -1,6 +1,6 @@
-<template>
+﻿<template>
   <v-dialog :model-value="modelValue" max-width="540" @update:model-value="$emit('update:modelValue', $event)">
-    <div class="dialog-card">
+    <div class="dialog-card dialog-scroll">
       <h2 class="dialog-title">录入新成员</h2>
       <p class="dialog-tip">
         录进来之后，TA 用这个游戏 ID 注册就会自动成为「公会成员」。

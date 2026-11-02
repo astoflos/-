@@ -1,6 +1,6 @@
-<template>
-  <v-dialog :model-value="modelValue" max-width="520" @update:model-value="$emit('update:modelValue', $event)">
-    <div class="dialog-card">
+﻿<template>
+  <v-dialog :model-value="modelValue" max-width="520" scrollable @update:model-value="$emit('update:modelValue', $event)">
+    <div class="dialog-card dialog-scroll">
       <h2 class="dialog-title">登记新领地</h2>
 
       <form @submit.prevent="submit">

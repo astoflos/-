@@ -1,4 +1,4 @@
-/* =============================================================================
+﻿/* =============================================================================
    伊甸园 Eden · 内容配置文件
    -----------------------------------------------------------------------------
    整个网站的文字、成员、领地、公告、礼包清单，全都在这一个文件里改。
@@ -135,7 +135,7 @@ const config = {
 		// ---- 公会资源 ----
 		{ type: 'private', cmd: 'Eden沼泽刷怪塔', desc: '沼泽刷怪塔', products: '红石粉、腐肉、骨头、萤石粉、线、黏液球、箭、蜘蛛眼、糖', owner: 'nan_chan' },
 		{ type: 'private', cmd: '蜜蜂', desc: '蜜脾农场', products: '蜜脾、蜂蜜瓶', owner: 'njl_141012CZ' },
-		{ type: 'private', cmd: 'pa 伊甸园树苗', desc: '菌类农场', products: '诡异菌柄、绯红菌柄', owner: 'nan_chan' },
+		{ type: 'private', cmd: '伊甸园树苗', desc: '菌类农场', products: '诡异菌柄、绯红菌柄', owner: 'nan_chan' },
 		{ type: 'private', cmd: '伊甸园工业区.s', desc: '64 核黑金刚熔炉组', products: '烧炼产物（铁锭、金锭、石头等）', owner: 'guoguo' },
 		{ type: 'private', cmd: '伊甸园工业区.t', desc: '粘液刷铁机', products: '铁锭、铁块', owner: 'guoguo' },
 		{ type: 'private', cmd: 'player的刷铁机', desc: '生电刷铁机', products: '铁锭、基础电路板', owner: 'GamePlayer1' },

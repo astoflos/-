@@ -1,4 +1,4 @@
-/* =========================================================================
+﻿/* =========================================================================
    平板 / 手机自适应
    ========================================================================= */
 
@@ -301,9 +301,17 @@
   }
 
   .eden-side {
-    grid-template-columns: 44px 1fr;
+    grid-template-columns: 44px 1fr 38px;
+    grid-template-areas:
+      "logo head toggle"
+      "foot foot foot";
     padding: 12px;
     gap: 8px 10px;
+  }
+
+  .nav-toggle {
+    grid-area: toggle;
+    display: flex;
   }
 
   .eden-logo {
@@ -324,29 +332,58 @@
     font-size: 10.5px;
   }
 
-  .eden-nav button {
-    padding: 8px 6px;
-    font-size: 12px;
-    justify-content: center;
-    gap: 0;
-  }
-
-  .eden-nav .v-icon {
-    display: none;
-  }
-
-  /* 六个栏目改成 3 列两行，不再横向滚动、也不会把最后一项切掉 */
+  /* 导航改成左侧抽屉，默认收起，点右上角按钮打开 */
   .eden-nav {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 236px;
+    max-width: 78vw;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
     gap: 6px;
-    overflow: visible;
-    padding-bottom: 0;
+    margin: 0;
+    padding: 14px 12px 20px;
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 0 20px 20px 0;
+    box-shadow: 0 24px 60px rgba(60, 44, 110, 0.32);
+    transform: translateX(-104%);
+    transition: transform 0.34s cubic-bezier(0.66, 0, 0.34, 1);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    z-index: 55;
   }
 
-  /* 最后落单的那一项居中，不然吊在左边很难看 */
+  .eden-nav.is-open {
+    transform: none;
+  }
+
+  .nav-head {
+    display: flex;
+  }
+
+  .eden-nav button {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 11px 12px;
+    font-size: 13.5px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  .eden-nav button.active {
+    background: rgba(122, 102, 214, 0.14);
+  }
+
   .eden-nav button:last-child:nth-child(3n + 1) {
-    grid-column: 2 / 3;
+    grid-column: auto;
+  }
+
+  .nav-backdrop {
+    display: block;
   }
 
   /* 小标题行：长说明另起一行，右上角的按钮不再和它挤在一起 */
@@ -529,9 +566,11 @@
 
   .recruit-hero .hero-media img {
     width: 100%;
-    max-height: 168px;
-    object-fit: cover;
+    height: auto;
+    max-height: none;
+    object-fit: contain;
     border-radius: 10px;
+    background: rgba(255, 255, 255, 0.55);
   }
 
   .fold-head {

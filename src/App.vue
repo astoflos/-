@@ -41,7 +41,15 @@
             <p class="eden-motto">{{ configdata.guild.motto }}</p>
           </div>
 
-          <nav class="eden-nav">
+          <button class="nav-toggle" type="button" aria-label="打开导航" @click="navOpen = true">
+            <v-icon size="20">mdi-menu</v-icon>
+          </button>
+
+          <nav class="eden-nav" :class="{ 'is-open': navOpen }">
+            <div class="nav-head">
+              <span>导航</span>
+              <button class="nav-close" type="button" aria-label="关闭导航" @click="navOpen = false">✕</button>
+            </div>
             <button
               v-for="item in configdata.nav"
               :key="item.key"
@@ -88,6 +96,8 @@
             <button class="eden-join" type="button" @click="dialogJoin = true">加入我们</button>
           </div>
         </aside>
+
+        <div class="nav-backdrop" :class="{ 'is-show': navOpen }" @click="navOpen = false"></div>
 
         <main class="eden-main">
           <section class="page-banner">
