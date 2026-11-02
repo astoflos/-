@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="eden-app">
     <video
       v-if="configdata.wallpaperVideo && configdata.wallpaperVideo.enable"
@@ -26,7 +26,12 @@
     <v-app>
       <div class="app-shell">
         <aside class="eden-side">
-          <img class="eden-logo" :src="configdata.logo" alt="伊甸园 Eden" />
+          <img
+            class="eden-logo"
+            :src="configdata.logo"
+            alt="伊甸园 Eden"
+            @click="openEasterEgg"
+          />
 
           <div class="eden-side-head">
             <h1 class="eden-title">{{ configdata.guild.name }}<span>{{ configdata.guild.en }}</span></h1>
@@ -123,6 +128,40 @@
             数值越小，动态壁纸越清楚；越大，背景越淡。设置会记在这台设备上。
           </p>
           <button class="eden-join" type="button" style="width: 100%;" @click="resetBg">恢复默认</button>
+
+          <!-- 账号安全：只有后门名单里的账号（果果 / 会长）才显示 -->
+          <template v-if="auth.user && recovery.applicable">
+            <div class="recovery-sep"></div>
+            <h3 class="recovery-title">账号恢复码</h3>
+            <p class="foot-note" style="text-align: left;">
+              忘了密码时，账号填「{{ auth.user.gameName }}」、密码填恢复码就能登录，不用改代码。
+            </p>
+            <label class="field">
+              <span>{{ recovery.enabled ? '已设置，想换就重新填一个' : '还没设置' }}</span>
+              <input
+                v-model="recoveryCode"
+                type="password"
+                maxlength="72"
+                placeholder="至少 8 位，自己记得住就行"
+                autocomplete="new-password"
+              />
+            </label>
+            <p v-if="recoveryMsg" class="recovery-msg">{{ recoveryMsg }}</p>
+            <div class="recovery-actions">
+              <button class="eden-join" type="button" :disabled="recoveryBusy" @click="saveRecovery">
+                {{ recoveryBusy ? '保存中…' : '保存恢复码' }}
+              </button>
+              <button
+                v-if="recovery.enabled"
+                class="recovery-clear"
+                type="button"
+                :disabled="recoveryBusy"
+                @click="clearRecovery"
+              >
+                清除
+              </button>
+            </div>
+          </template>
         </div>
       </v-dialog>
 
@@ -153,6 +192,9 @@
       </v-dialog>
 
       <AuthDialog v-model="dialogAuth" />
+
+      <!-- 彩蛋：点左上角 logo 进（只在电脑端） -->
+      <EasterEgg v-model="eggOpen" @closed="onEggClosed" />
     </v-app>
   </div>
 </template>
@@ -165,6 +207,11 @@
 </style>
 
 <style scoped>
+/* logo 可以点，但别做得太明显——彩蛋得自己发现 */
+.eden-logo {
+  cursor: pointer;
+}
+
 .dialog-note {
   margin: 12px 0 0;
   padding: 10px 12px;
@@ -173,5 +220,48 @@
   background: rgba(122, 102, 214, 0.08);
   border-radius: 10px;
   text-align: center;
+}
+
+/* 页面设置里的「账号恢复码」 */
+.recovery-sep {
+  height: 1px;
+  margin: 18px 0 14px;
+  background: var(--eden-line);
+}
+
+.recovery-title {
+  margin: 0 0 6px;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--eden-ink);
+}
+
+.recovery-msg {
+  margin: 8px 0 0;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--eden-accent);
+}
+
+.recovery-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.recovery-actions .eden-join {
+  flex: 1;
+}
+
+.recovery-clear {
+  padding: 9px 14px;
+  font-family: inherit;
+  font-size: 12px;
+  color: #c05a7a;
+  background: rgba(192, 90, 122, 0.08);
+  border: 1px dashed rgba(192, 90, 122, 0.35);
+  border-radius: 10px;
+  cursor: pointer;
 }
 </style>

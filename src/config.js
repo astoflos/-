@@ -1,4 +1,4 @@
-﻿/* =============================================================================
+/* =============================================================================
    伊甸园 Eden · 内容配置文件
    -----------------------------------------------------------------------------
    整个网站的文字、成员、领地、公告、礼包清单，全都在这一个文件里改。
@@ -14,6 +14,7 @@
      · 招新礼包清单 ................. recruit.groups ← 有详细注释
      · 招新要求 / 加入流程 .......... recruit.requirements / recruit.steps
      · 成员名册 ..................... members       ← 有详细注释，照着复制
+     · 特邀嘉宾 ..................... guests        ← 和成员分开的名单，D 开头 UID
      · 公会守则 ..................... rules
      · 里程碑 ....................... milestones
      · 加入我们的弹窗文案 ........... join
@@ -33,9 +34,9 @@ const config = {
 	// ================= 站点图像 =================
 	logo: '/img/site/logo.jpg',
 	background: '/img/site/bg.jpg',
-	splashImage: '/img/site/splash-base.jpg',
+	splashImage: '/img/site/splash.jpg',
 	// 开屏幕布用的图（左右两半各切成上下梯形，像舞台幕布拉开）
-	splashDoors: '/img/site/splash-doors.jpg',
+	splashDoors: '/img/site/splash-doors-galaxy.jpg',
 
 	// 动态壁纸（原模板的动态壁纸）：不想用就把 enable 改成 false，会退回静态插画背景
 	wallpaperVideo: {
@@ -50,6 +51,9 @@ const config = {
 		territory: '/img/site/territory.jpg',
 		recruit: '/img/site/recruit.jpg',
 		members: '/img/site/members.jpg',
+		// 项目申报用的是 public/img/site/banners/ 里的图，剩下的几张留作以后换
+		projects: '/img/site/banners/banner-04.jpg',
+		departments: '/img/site/banners/banner-03.jpg',
 		about: '/img/site/about.jpg'
 	},
 
@@ -59,8 +63,8 @@ const config = {
 		en: 'EDEN',
 		motto: '循此踏入伊甸',
 		slogan: '在方块之间，种下一片不会凋谢的花园。',
-		intro: '伊甸园是一个以“一起玩、一起建”为宗旨的休闲公会。我们常驻铃兰花圃，主玩粘液科技，喜欢把机器、建筑和花园都折腾得漂漂亮亮。这里没有强制打卡，也没有内卷，只希望每个愿意留下的人，都能在伊甸找到自己的一块地。',
-		founded: '2025 年秋'
+		intro: '伊甸园是一个以“一起玩、一起建”为宗旨的休闲公会。我们常驻铃兰花圃，主玩建筑，喜欢把机器、建筑和花园都折腾得漂漂亮亮。这里没有强制打卡，也没有内卷，只希望每个愿意留下的人，都能在伊甸找到自己的一块领地。',
+		founded: '2026 年秋'
 	},
 
 	// 所在服务器（公会主页只作说明，不重点宣传）
@@ -77,20 +81,24 @@ const config = {
 
 	// ================= 导航 =================
 	nav: [
-		{ key: 'home', label: '首页', icon: 'mdi-home-variant-outline' },
+		{ key: 'home', label: '公会首页', icon: 'mdi-home-variant-outline' },
 		{ key: 'territory', label: '公会领地', icon: 'mdi-map-marker-radius-outline' },
 		{ key: 'recruit', label: '招新福利', icon: 'mdi-gift-outline' },
 		{ key: 'members', label: '成员名册', icon: 'mdi-account-group-outline' },
+		{ key: 'projects', label: '项目申报', icon: 'mdi-clipboard-list-outline' },
+		{ key: 'departments', label: '公会部门', icon: 'mdi-office-building-outline' },
 		{ key: 'about', label: '关于与规则', icon: 'mdi-book-open-variant' }
 	],
 
 	// 各栏目横幅下的副标题
 	pageInfo: {
-		home: '在方块之间，种下一片不会凋谢的花园',
+		home: '在方块之间，种下一片永不凋谢的花园',
 		territory: '领地与机器一览 · 点击指令即可复制传送',
 		recruit: '伊甸园初遇礼 · 满足要求即可申请',
-		members: '一起盖房子、一起摆机器的人',
-		about: '公会简介、守则，与我们一起走过的路'
+		members: '最好的宝子们',
+		projects: '想盖点什么、想造台机器，先在这儿报一笔',
+		departments: '八个部门，各管一摊事',
+		about: '公会简介、守则，还有我们一起走过的路'
 	},
 
 	// ================= 联系方式 =================
@@ -147,12 +155,83 @@ const config = {
 		{ key: 'public', label: '公益资源' }
 	],
 
+	// ================= 项目申报 =================
+	// 类型决定「确认完成」之后这条项目落到哪儿
+	projectTypes: [
+		{ key: 'event', label: '活动', note: '只有财政支持，完成后不记录' },
+		{ key: 'build', label: '建筑', note: '完成后进入公会领地' },
+		{ key: 'tech', label: '科技', note: '完成后进入登记领地' },
+		{ key: 'attached', label: '附属', note: '子领地或原项目补足，完成后不记录' }
+	],
+
+	projectStatus: [
+		{ key: 'plan', label: '计划中' },
+		{ key: 'doing', label: '进行中' },
+		{ key: 'done', label: '已完成' }
+	],
+
+	// ================= 公会部门 =================
+	// 部门是固定的，部长在页面上由 guoguo / ruo_xi 指定，存在 KV 里。
+	// 部长只能从成员名册里挑（按游戏 ID 对应），名册改这里也跟着走。
+	// image / tint：卡片右边那块渐显的图和书签色，图在 public/img/site/departments/
+	// greet：点开部门时飘出来的那句开场白（后面会自动接「XX部欢迎你」）
+	departments: [
+		{
+			key: 'manage', name: '管理部', tint: '#7a66d6',
+			image: '/img/site/departments/dept-01.jpg',
+			greet: '政通人和，海晏河清。',
+			duty: '统筹公会日常，协调各部门，重大事项由管理部发起并落地，也负责对外代表公会。'
+		},
+		{
+			key: 'org', name: '组织部', tint: '#e58fb6',
+			image: '/img/site/departments/dept-02.jpg',
+			greet: '来人即缘，留下即家。',
+			duty: '负责人事管理与招纳新人：新人接待、入会流程、名册维护，以及成员去留的记录。'
+		},
+		{
+			key: 'tech', name: '科技部', tint: '#6fd0bd',
+			image: '/img/site/departments/dept-03.jpg',
+			greet: '万物皆可自动化。',
+			duty: '粘液科技、生电与红石设施的设计、建造和维护，也负责给成员做技术答疑。'
+		},
+		{
+			key: 'logistics', name: '后勤部', tint: '#f0a868',
+			image: '/img/site/departments/dept-04.jpg',
+			greet: '兵马未动，粮草先行。',
+			duty: '物资仓管、公共设施维护，开荒和活动前的物资准备、场地收拾。'
+		},
+		{
+			key: 'finance', name: '财政部', tint: '#f2c46a',
+			image: '/img/site/departments/dept-05.jpg',
+			greet: '一分一厘，皆有来处。',
+			duty: '公会资金收支、项目预算的审批与结算，定期公布账目。'
+		},
+		{
+			key: 'foreign', name: '外交部', tint: '#86c3ff',
+			image: '/img/site/departments/dept-06.jpg',
+			greet: '海内存知己，天涯若比邻。',
+			duty: '与其他公会、服务器的联络，活动合作与对外交流，维护公会形象。'
+		},
+		{
+			key: 'war', name: '战争部', tint: '#c05a7a',
+			image: '/img/site/departments/dept-07.jpg',
+			greet: '守土有责，寸土不让。',
+			duty: 'PVP 与守备，处理冲突和纠纷，活动期间的安全保障。'
+		},
+		{
+			key: 'build', name: '建筑部', tint: '#b7a6ff',
+			image: '/img/site/departments/dept-08.jpg',
+			greet: '千仞高塔，始于垒土。',
+			duty: '公会建筑的设计与施工：公共建筑和活动场地的规划、取材与落地。'
+		}
+	],
+
 	// ================= 招新 =================
 	recruit: {
 		title: '伊甸园初遇礼',
 		subtitle: '全套神装 · 海量资源 · 开荒无忧',
 		image: '/img/site/gifts.png',
-		intro: '正式成员可领一份初遇礼，清单随版本调整。',
+		intro: '正式成员可领一份初遇礼，清单随版本可能有略微调整。',
 
 		// ★★★ 以后加礼包物品就看这里 ★★★
 		// 在对应 groups 的 items 里复制一行 { ... } 改字段：
@@ -208,8 +287,9 @@ const config = {
 		requirements: [
 			'年满 16 岁',
 			'喜欢一起玩，愿意参与公会公共建设',
+			'和谐友善',
 			'遵守服务器与公会规则，不破坏他人建筑',
-			'上线时间自由，不强制打卡；粘液科技不会也可以教'
+			'上线时间自由，不强制发布任务；建筑不会可以学，粘液科技不会也可以教'
 		],
 
 		steps: [
@@ -235,51 +315,94 @@ const config = {
 	members: [
 		{
 			name: '楉曦', id: 'ruo_xi', role: '会长', color: '#7a66d6',
-			avatar: '/img/site/avatars/avatar-1.jpg', uid: 'E47382', joinDate: '2025-09-14',
-			intro: '公会的第一块基石，主城和金库都在他名下。',
-			quote: '先把路修好，人自然会来。'
+			avatar: '/img/site/avatars/avatar-1.jpg', uid: 'E47382', joinDate: '2025-09-19',
+			intro: '公会的第一块基石。',
+			quote: '这个人很懒，什么都没有说...'
 		},
 		{
 			name: '果果', id: 'guoguo', role: '成员', color: '#e58fb6',
-			avatar: '/img/site/avatars/avatar-2.jpg', uid: 'E19064', joinDate: '2025-09-20',
-			intro: '工业区常驻，粘液科技和这个网站都是他在折腾。',
-			quote: '机器坏了就修，修不好就再造一台。'
+			avatar: '/img/site/avatars/avatar-2.jpg', uid: 'E19064', joinDate: '2025-10-03',
+			intro: '什么都不会，什么都会一点，有问题找他就对了。',
+			quote: '~~伊甸园最帅之人~~，全铃兰花圃最帅之人！！'
 		},
 		{
 			name: '姐姐', id: 'GamePlayer1', role: '成员', color: '#f0a868',
-			avatar: '/img/site/avatars/avatar-3.jpg', uid: 'E82517', joinDate: '2026-03-02',
-			intro: '刷铁机厂长，产量稳定得像闹钟。',
-			quote: '铁够用就行，别堆那么多。'
+			avatar: '/img/site/avatars/avatar-3.jpg', uid: 'E82517', joinDate: '2026-09-26',
+			intro: '神仙姐姐是吉祥物。',
+			quote: '这个人很懒，什么都没有说...'
 		},
 		{
 			name: '基米', id: 'BiliBili', role: '成员', color: '#63b3c3',
-			avatar: '/img/site/avatars/avatar-4.jpg', uid: 'E36049', joinDate: '2025-11-08',
-			intro: '常驻夜猫子，建筑和截图都很好看。',
-			quote: '夜里十二点的伊甸最好看。'
+			avatar: '/img/site/avatars/avatar-4.jpg', uid: 'E36049', joinDate: '2025-10-04',
+			intro: '常驻夜猫子，最好的哈基米。',
+			quote: '这个人很懒，什么都没有说...'
 		},
 		{
 			name: '小奈', id: 'nan_chan', role: '成员', color: '#9d8cd8',
-			avatar: '/img/site/avatars/avatar-5.jpg', uid: 'E91628', joinDate: '2025-10-05',
-			intro: '沼泽刷怪塔和菌类农场的主人。',
-			quote: '慢慢来，反正世界不会跑。'
+			avatar: '/img/site/avatars/avatar-5.jpg', uid: 'E91628', joinDate: '2025-10-24',
+			intro: '沼泽刷怪塔和菌类农场的主人，科技部中坚力量（如果有科技部）。',
+			quote: '这个人很懒，什么都没有说...'
 		},
 		{
 			name: '鱼儿', id: 'Gakikfg', role: '成员', color: '#74c0a4',
-			avatar: '/img/site/avatars/avatar-6.jpg', uid: 'E27450', joinDate: '2026-01-18',
-			intro: '钓鱼佬，仓库里一半是鱼。',
-			quote: '今天也没钓到好东西。'
+			avatar: '/img/site/avatars/avatar-6.jpg', uid: 'E27450', joinDate: '2026-10-01',
+			intro: '还在打复活赛。',
+			quote: '这个人很懒，什么都没有说...'
 		},
 		{
 			name: 'N', id: 'njl_141012CZ', role: '成员', color: '#c79ad0',
-			avatar: '/img/site/avatars/avatar-7.jpg', uid: 'E63185', joinDate: '2026-02-22',
-			intro: '蜜脾农场负责人，话不多但活很细。',
-			quote: '少说话，多种树。'
+			avatar: '/img/site/avatars/avatar-7.jpg', uid: 'E63185', joinDate: '2026-09-19',
+			intro: '蜜脾农场的主人，话不多但活很细。',
+			quote: '这个人很懒，什么都没有说...'
 		},
 		{
 			name: '斯怀特', id: 'swight', role: '成员', color: '#8fa4d8',
-			avatar: '/img/site/avatars/avatar-8.jpg', uid: 'E50832', joinDate: '2026-05-30',
-			intro: '新加入的风景党，喜欢在山顶盖小屋。',
-			quote: '先看看风景，再决定住哪。'
+			avatar: '/img/site/avatars/avatar-8.jpg', uid: 'E50832', joinDate: '2026-10-15',
+			intro: '老资历就会欺负人！',
+			quote: '这个人很懒，什么都没有说...'
+		},
+		{
+			name: '鱼', id: 'Microsoft', role: '成员', color: '#c9b471',
+			avatar: '/img/site/avatars/avatar-9.jpg', uid: 'E47645', joinDate: '2026-10-23',
+			intro: '怎么这么多鱼？',
+			quote: '这个人很懒，什么都没有说...'
+		},
+		{
+			name: 'slient', id: 'slient', role: '成员', color: '#8e86c9',
+			avatar: '/img/site/avatars/avatar-10.jpg', uid: 'E52912', joinDate: '2026-10-31',
+			intro: '可爱小萌新',
+			quote: '这个人很懒，什么都没有说...'
+		}
+	],
+
+	// ================= 特邀嘉宾 =================
+	// 和成员名册分开的名单，不算公会成员、也不参与注册身份判定。
+	// 复制一行 { ... } 就能加一位（行尾逗号别忘了）：
+	//   name:  昵称；id: 游戏 ID；guild: 所在公会；title: 职务（没有就写 ''）
+	//   uid:   D + 5 位数字（嘉宾统一 D 开头，成员是 E 开头）
+	//   color: 头像底色；avatar: 头像图片（放在 public/img/site/avatars/ 下），留空就显示昵称首字
+	//   joinDate: 可选，没有公会时名片上显示这个日期
+	guests: [
+		{
+			name: '黄叔', id: 'ny_huang', guild: '南方集团', title: '会长',
+			uid: 'D99514', color: '#7f63c9', avatar: '/img/site/avatars/guest-huang.jpg',
+			// intro 是可选的，留空名片上就不显示这一行
+			intro: ''
+		},
+		{
+			name: '秋墨', id: 'bmcq', guild: '夜航星', title: '',
+			uid: 'D27245', color: '#9a7fd8', avatar: '/img/site/avatars/guest-qiumo.jpg',
+			intro: ''
+		},
+		{
+			name: '葫芦', id: 'ieeen', guild: '栖潮屿', title: '档案组长',
+			uid: 'D11344', color: '#6d86d6', avatar: '/img/site/avatars/guest-hulu.jpg',
+			intro: ''
+		},
+		{
+			name: 'kk', id: 'kilven_killer', guild: '牢九门', title: '会长',
+			uid: 'D33862', color: '#7d6bc4', avatar: '/img/site/avatars/guest-1.jpg',
+			intro: ''
 		}
 	],
 
@@ -305,7 +428,10 @@ const config = {
 	//   留空 '' = 按规则任何同名注册都直接成为公会成员（方便，但别人也能冒充名册成员）
 	//   填一个字符串 = 注册名册成员时必须输入这个口令，普通会员不受影响
 	auth: {
-		guildCode: ''
+		guildCode: '',
+		// 只有这些账号能「录入成员」和删掉录入的记录（其他公会成员也看不到这个按钮）。
+		// 想换人就在这儿改游戏 ID，前端按钮和服务端接口都跟着它走。
+		memberAdmins: ['guoguo', 'ruo_xi']
 	},
 
 	// ================= 加入流程（弹窗） =================
@@ -344,9 +470,12 @@ const config = {
 		'机器会坏，花园会开，人会一直在。',
 		'循此踏入伊甸，从此不问归途。',
 		'我们不是最强的公会，只是想一起把日子过成喜欢的样子。',
-		'铁可以再挖，房子可以再盖，人走了就真的走了，所以别走。',
-		'铃兰花圃的春天很长，长到足够把一座城慢慢盖完。',
-		'有人负责红石，有人负责花，有人负责在出生点等新朋友。',
+		'这里是家。',
+		'矿物可以再挖，房子可以再盖，人走了就真的走了，所以请留下来。',
+		'铃兰的春天很长，长到足够把一座城慢慢盖完。',
+		'我才不是彩蛋。',
+		'今天也要有个好心情。',
+		'有人负责红石，有人负责花，有人喜欢你。',
 		'愿你在伊甸，找到一块属于自己的地，和一盏等你回家的灯。'
 	],
 

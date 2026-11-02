@@ -4,14 +4,18 @@ import ScrollProgress from './components/ScrollProgress.vue'
 import CursorGlow from './components/CursorGlow.vue'
 import MusicPlayer from './components/MusicPlayer.vue'
 import AuthDialog from './components/AuthDialog.vue'
+import EasterEgg from './components/EasterEgg.vue'
 import PageHome from './components/pages/PageHome.vue'
 import PageTerritory from './components/pages/PageTerritory.vue'
 import PageRecruit from './components/pages/PageRecruit.vue'
 import PageMembers from './components/pages/PageMembers.vue'
+import PageProjects from './components/pages/PageProjects.vue'
+import PageDepartments from './components/pages/PageDepartments.vue'
 import PageAbout from './components/pages/PageAbout.vue'
 import config from './config.js'
 import { setMeta, getFormattedDate, dataConsole } from './utils/common.js'
 import { auth, loadMe, logout } from './lib/auth.js'
+import { api } from './lib/api.js'
 
 export default {
   components: {
@@ -21,10 +25,13 @@ export default {
     CursorGlow,
     MusicPlayer,
     AuthDialog,
+    EasterEgg,
     PageHome,
     PageTerritory,
     PageRecruit,
     PageMembers,
+    PageProjects,
+    PageDepartments,
     PageAbout
   },
   data() {
@@ -35,10 +42,15 @@ export default {
       dialogJoin: false,
       dialogAuth: false,
       dialogSettings: false,
+      eggOpen: false,
       bgOpacity: 100,
       date: '',
       bannerShift: 0,
       bannerRaf: 0,
+      recovery: { applicable: false, enabled: false },
+      recoveryCode: '',
+      recoveryMsg: '',
+      recoveryBusy: false,
       auth
     }
   },
@@ -80,10 +92,13 @@ export default {
     // 开屏每个会话只出现一次
     this.showSplash = !sessionStorage.getItem('eden-entered')
 
-    // 背景可见度设置
+    // 背景可见度设置（没存过就用默认 100，注意 Number(null) 是 0，不能直接转）
     try {
-      const saved = Number(localStorage.getItem('eden-bg-opacity'))
-      if (Number.isFinite(saved) && saved >= 0 && saved <= 100) this.bgOpacity = saved
+      const raw = localStorage.getItem('eden-bg-opacity')
+      if (raw !== null) {
+        const saved = Number(raw)
+        if (Number.isFinite(saved) && saved >= 0 && saved <= 100) this.bgOpacity = saved
+      }
     } catch (e) { /* 忽略 */ }
     this.applyBg(this.bgOpacity)
 
@@ -108,12 +123,63 @@ export default {
       try {
         localStorage.setItem('eden-bg-opacity', String(val))
       } catch (e) { /* 忽略 */ }
+    },
+    dialogSettings(val) {
+      if (val) this.loadRecovery()
     }
   },
   methods: {
     setMeta,
     dataConsole,
     getFormattedDate,
+
+    /** 页面设置弹窗里那块「账号安全」，只有后门名单里的账号才会出现 */
+    async loadRecovery() {
+      if (!auth.user) {
+        this.recovery = { applicable: false, enabled: false }
+        return
+      }
+      try {
+        this.recovery = await api.recovery()
+      } catch (e) {
+        this.recovery = { applicable: false, enabled: false }
+      }
+    },
+
+    async saveRecovery() {
+      const code = String(this.recoveryCode || '').trim()
+      if (code.length < 8) {
+        this.recoveryMsg = '恢复码至少 8 位'
+        return
+      }
+      this.recoveryBusy = true
+      this.recoveryMsg = ''
+      try {
+        await api.setRecovery(code)
+        this.recovery = { ...this.recovery, enabled: true }
+        this.recoveryCode = ''
+        this.recoveryMsg = '已保存。忘了密码时，账号填游戏名、密码填它就能进。'
+      } catch (e) {
+        this.recoveryMsg = e.message || '保存失败'
+      } finally {
+        this.recoveryBusy = false
+      }
+    },
+
+    async clearRecovery() {
+      if (!window.confirm('清除恢复码？清除之后就只剩密码能登录了。')) return
+      this.recoveryBusy = true
+      this.recoveryMsg = ''
+      try {
+        await api.clearRecovery()
+        this.recovery = { ...this.recovery, enabled: false }
+        this.recoveryMsg = '已清除'
+      } catch (e) {
+        this.recoveryMsg = e.message || '清除失败'
+      } finally {
+        this.recoveryBusy = false
+      }
+    },
 
     onEnter() {
       sessionStorage.setItem('eden-entered', '1')
@@ -145,6 +211,17 @@ export default {
 
     async doLogout() {
       await logout()
+    },
+
+    /** 点左上角 logo 的彩蛋，只在电脑端开 */
+    openEasterEgg() {
+      if (window.innerWidth <= 760) return
+      this.eggOpen = true
+    },
+
+    /** 彩蛋看完回到主页 */
+    onEggClosed() {
+      if (this.view !== 'home') this.go('home')
     },
 
     applyHash() {

@@ -8,6 +8,10 @@ import login from '../api/login.js'
 import logout from '../api/logout.js'
 import me from '../api/me.js'
 import territories from '../api/territories.js'
+import members from '../api/members.js'
+import recovery from '../api/recovery.js'
+import projects from '../api/projects.js'
+import departments from '../api/departments.js'
 
 const routes = {
   'POST /register': register,
@@ -16,7 +20,19 @@ const routes = {
   'GET /me': me,
   'GET /territories': territories,
   'POST /territories': territories,
-  'DELETE /territories': territories
+  'DELETE /territories': territories,
+  'GET /members': members,
+  'POST /members': members,
+  'DELETE /members': members,
+  'GET /recovery': recovery,
+  'POST /recovery': recovery,
+  'DELETE /recovery': recovery,
+  'GET /projects': projects,
+  'POST /projects': projects,
+  'PATCH /projects': projects,
+  'DELETE /projects': projects,
+  'GET /departments': departments,
+  'PATCH /departments': departments
 }
 
 function readRaw(req) {

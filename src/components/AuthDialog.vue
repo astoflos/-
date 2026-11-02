@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <v-dialog :model-value="modelValue" max-width="720" @update:model-value="$emit('update:modelValue', $event)">
     <div class="auth-shell" :class="{ 'is-register': mode === 'register' }">
       <!-- 滑动的表单卡片 -->
@@ -25,7 +25,7 @@
         <form v-show="mode === 'register'" class="auth-form" @submit.prevent="submit">
           <h1>REGISTER</h1>
           <input v-model.trim="form.gameName" maxlength="16" placeholder="游戏名（英文）" autocomplete="off" />
-          <p v-if="guildMatch" class="hint">名册成员 · 注册后为公会成员</p>
+          <p v-if="isRosterName" class="hint">名册成员 · 注册后为公会成员</p>
           <input v-model.trim="form.qq" inputmode="numeric" maxlength="12" placeholder="QQ 号" autocomplete="off" />
           <input v-model="form.password" type="password" maxlength="64" placeholder="密码（至少 6 位）" autocomplete="new-password" />
           <input v-model="form.confirm" type="password" maxlength="64" placeholder="确认密码" autocomplete="new-password" />
@@ -70,6 +70,7 @@
 
 <script>
 import config from '../config.js'
+import { api } from '../lib/api.js'
 import { login, register } from '../lib/auth.js'
 
 export default {
@@ -84,6 +85,7 @@ export default {
       mode: this.defaultMode,
       loading: false,
       error: '',
+      rosterIds: [],
       form: {
         gameName: '',
         qq: '',
@@ -95,13 +97,15 @@ export default {
     }
   },
   computed: {
-    guildMatch() {
+    /** 是不是名册里的名字（config 里写死的 + 页面上录入的） */
+    isRosterName() {
       const key = String(this.form.gameName || '').trim().toLowerCase()
-      if (!key) return null
-      return (config.members || []).find(m => String(m.id || '').toLowerCase() === key) || null
+      if (!key) return false
+      if ((config.members || []).some(m => String(m.id || '').toLowerCase() === key)) return true
+      return this.rosterIds.includes(key)
     },
     needGuildCode() {
-      return Boolean(this.guildMatch) && Boolean(config.auth && config.auth.guildCode)
+      return this.isRosterName && Boolean(config.auth && config.auth.guildCode)
     }
   },
   watch: {
@@ -109,10 +113,19 @@ export default {
       if (val) {
         this.error = ''
         this.mode = this.defaultMode
+        this.loadRoster()
       }
     }
   },
   methods: {
+    async loadRoster() {
+      try {
+        const res = await api.members()
+        this.rosterIds = (res.items || []).map(m => String(m.id || '').toLowerCase())
+      } catch (e) {
+        this.rosterIds = []
+      }
+    },
     switchMode(mode) {
       this.mode = mode
       this.error = ''

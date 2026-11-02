@@ -1,4 +1,4 @@
-﻿/**
+/**
  * /api/territories
  *   GET    列出「登记表」里新增的领地（页面会把它和 config.js 里原有的领地合并显示）
  *   POST   新增领地（只有公会成员能加）
@@ -12,7 +12,7 @@ import { checkTerritory } from './_guild.js'
 const KEY = 'eden:territories'
 const MAX = 300
 
-async function readItems() {
+export async function readItems() {
   const raw = await store.get(KEY)
   if (!raw) return []
   try {
@@ -23,7 +23,7 @@ async function readItems() {
   }
 }
 
-async function writeItems(items) {
+export async function writeItems(items) {
   await store.set(KEY, JSON.stringify(items.slice(0, MAX)))
 }
 

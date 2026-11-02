@@ -1,4 +1,4 @@
-﻿/* =========================================================================
+/* =========================================================================
    平板 / 手机自适应
    ========================================================================= */
 
@@ -325,12 +325,39 @@
   }
 
   .eden-nav button {
-    padding: 7px 10px;
+    padding: 8px 6px;
     font-size: 12px;
+    justify-content: center;
+    gap: 0;
   }
 
   .eden-nav .v-icon {
     display: none;
+  }
+
+  /* 六个栏目改成 3 列两行，不再横向滚动、也不会把最后一项切掉 */
+  .eden-nav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    overflow: visible;
+    padding-bottom: 0;
+  }
+
+  /* 最后落单的那一项居中，不然吊在左边很难看 */
+  .eden-nav button:last-child:nth-child(3n + 1) {
+    grid-column: 2 / 3;
+  }
+
+  /* 小标题行：长说明另起一行，右上角的按钮不再和它挤在一起 */
+  .section-head {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  .section-head > span {
+    flex: 1 1 100%;
+    margin-left: 0;
   }
 
   .page-banner {
@@ -551,6 +578,11 @@
 
   .eden-side .music {
     max-width: 60vw;
+  }
+
+  /* 小屏把歌名那块收起来，只留封面和按键，少挡一点内容 */
+  .eden-side .music .meta {
+    display: none;
   }
 
   .eden-side .eden-user {

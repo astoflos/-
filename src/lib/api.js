@@ -29,5 +29,28 @@ export const api = {
 
   territories: () => request('/territories'),
   addTerritory: payload => request('/territories', { method: 'POST', body: JSON.stringify(payload) }),
-  deleteTerritory: id => request('/territories?id=' + encodeURIComponent(id), { method: 'DELETE' })
+  deleteTerritory: id => request('/territories?id=' + encodeURIComponent(id), { method: 'DELETE' }),
+
+  members: () => request('/members'),
+  addMember: payload => request('/members', { method: 'POST', body: JSON.stringify(payload) }),
+  deleteMember: id => request('/members?id=' + encodeURIComponent(id), { method: 'DELETE' }),
+
+  recovery: () => request('/recovery'),
+  setRecovery: code => request('/recovery', { method: 'POST', body: JSON.stringify({ code }) }),
+  clearRecovery: () => request('/recovery', { method: 'DELETE' }),
+
+  projects: () => request('/projects'),
+  addProject: payload => request('/projects', { method: 'POST', body: JSON.stringify(payload) }),
+  setProjectStatus: (id, status) => request('/projects?id=' + encodeURIComponent(id), {
+    method: 'PATCH',
+    body: JSON.stringify({ status })
+  }),
+  finishProject: id => request('/projects?id=' + encodeURIComponent(id) + '&finish=1', { method: 'POST' }),
+  deleteProject: id => request('/projects?id=' + encodeURIComponent(id), { method: 'DELETE' }),
+
+  departments: () => request('/departments'),
+  setDepartmentLeader: (id, leader, acting) => request('/departments?id=' + encodeURIComponent(id), {
+    method: 'PATCH',
+    body: JSON.stringify({ leader, acting })
+  })
 }

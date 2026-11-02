@@ -1,4 +1,4 @@
-﻿/**
+/**
  * POST /api/register  { gameName, qq, password, guildCode? }
  * 规则：
  *  - 每个游戏名只能注册一次，每个 QQ 也只能注册一次
@@ -7,10 +7,13 @@
 import crypto from 'node:crypto'
 import { store, storageError } from './_kv.js'
 import { json, readBody, hashPassword, createSession, setSessionCookie, publicUser } from './_auth.js'
-import { matchGuild, guildCode, checkGameName, checkQQ, checkPassword } from './_guild.js'
+import { matchMember, guildCode, checkGameName, checkQQ, checkPassword } from './_guild.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return json(res, 405, { error: '只支持 POST' })
+
+  const storageMsg = storageError()
+  if (storageMsg) return json(res, 503, { error: storageMsg })
 
   const body = await readBody(req)
   const gameName = String(body.gameName || '').trim()
@@ -27,7 +30,7 @@ export default async function handler(req, res) {
   if (byName) return json(res, 409, { error: '这个游戏名已经被注册了，直接登录吧' })
   if (byQQ) return json(res, 409, { error: '这个 QQ 已经注册过账号了，换个 QQ 或直接登录' })
 
-  const member = matchGuild(gameName)
+  const member = await matchMember(gameName)
   const role = member ? 'guild' : 'member'
 
   // 可选口令：只有注册名册里的名字才需要，未配置则跳过
