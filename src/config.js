@@ -372,6 +372,12 @@ const config = {
 			avatar: '/img/site/avatars/avatar-10.jpg', uid: 'E52912', joinDate: '2026-10-31',
 			intro: '可爱小萌新',
 			quote: '这个人很懒，什么都没有说...'
+		},
+		{
+			name: '坦克', id: 'FranklinRoosevel', role: '成员', color: '#c9b471',
+			avatar: '/img/site/avatars/avatar-11.jpg', uid: 'E46322', joinDate: '2026-09-28',
+			intro: '只是一个透明人。',
+			quote: 'Tiger-Modell, ich kümmere mich darum.'
 		}
 	],
 
@@ -390,7 +396,7 @@ const config = {
 			intro: ''
 		},
 		{
-			name: '秋墨', id: 'bmcq', guild: '夜航星', title: '',
+			name: '秋墨', id: 'bmcq', guild: '夜航星', title: '副会长',
 			uid: 'D27245', color: '#9a7fd8', avatar: '/img/site/avatars/guest-qiumo.jpg',
 			intro: ''
 		},
