@@ -22,6 +22,8 @@ export default {
   },
   methods: {
     onScroll() {
+      // 手机端不显示顶部彩条，也就不用算进度
+      if (typeof window !== 'undefined' && window.innerWidth <= 760) return
       if (this.raf) return
       this.raf = requestAnimationFrame(() => {
         this.raf = 0
@@ -43,6 +45,13 @@ export default {
   z-index: 55;
   pointer-events: none;
   background: rgba(255, 255, 255, 0.35);
+}
+
+/* 手机端隐藏顶部彩条 */
+@media (max-width: 760px) {
+  .scroll-progress {
+    display: none;
+  }
 }
 
 .scroll-progress i {
