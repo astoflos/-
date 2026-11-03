@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 公会成员判定 + 表单校验。
  * 名册来自两处：src/config.js 的 members（写死的），以及页面上「录入成员」存进 KV 的名单。
  */
@@ -148,6 +148,31 @@ export function pickAvatar(seed) {
 
 export function pickColor(seed) {
   return COLORS[hashOf(seed) % COLORS.length]
+}
+
+/**
+ * 新注册账号的「候选成员档案」：字段顺序和 config.members 里的老成员一致，
+ * 方便直接复制到数据库 / config.js 里转正。
+ */
+export async function candidateProfile(gameName) {
+  const extra = await readExtraMembers()
+  const taken = [
+    ...(config.members || []).map(m => m.uid),
+    ...(config.guests || []).map(g => g.uid),
+    ...extra.map(m => m.uid)
+  ]
+  const key = String(gameName || '').trim().toLowerCase()
+  return {
+    name: String(gameName || '').trim(),
+    id: String(gameName || '').trim(),
+    role: '成员',
+    color: pickColor(key),
+    avatar: pickAvatar(key),
+    uid: makeUid(taken),
+    joinDate: new Date().toISOString().slice(0, 10),
+    intro: '',
+    quote: ''
+  }
 }
 
 /** 成员 UID：E + 5 位数字（特邀嘉宾在 config.guests 里手写 D + 5 位） */

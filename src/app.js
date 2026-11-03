@@ -1,4 +1,4 @@
-import Splash from './components/Splash.vue'
+﻿import Splash from './components/Splash.vue'
 import SakuraLayer from './components/SakuraLayer.vue'
 import ScrollProgress from './components/ScrollProgress.vue'
 import CursorGlow from './components/CursorGlow.vue'
@@ -43,6 +43,7 @@ export default {
       dialogAuth: false,
       dialogSettings: false,
       navOpen: false,
+      liteMode: typeof window !== 'undefined' && window.matchMedia('(max-width: 760px)').matches,
       eggOpen: false,
       bgOpacity: 100,
       date: '',
@@ -56,6 +57,11 @@ export default {
     }
   },
   computed: {
+    bgImageStyle() {
+      const w = this.configdata.wallpaperVideo || {}
+      const img = w.poster || this.configdata.background || ''
+      return img ? { backgroundImage: `url('${img}')` } : {}
+    },
     currentNav() {
       return this.configdata.nav.find(n => n.key === this.view) || this.configdata.nav[0]
     },
@@ -112,11 +118,23 @@ export default {
     // 横幅轻微视差（尊重系统的减少动态效果设置）
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       window.addEventListener('scroll', this.onScroll, { passive: true })
+
+    // 横竖屏切换时同步「手机精简模式」
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      this.mq = window.matchMedia('(max-width: 760px)')
+      this.onMqChange = e => { this.liteMode = e.matches }
+      if (this.mq.addEventListener) this.mq.addEventListener('change', this.onMqChange)
+      else if (this.mq.addListener) this.mq.addListener(this.onMqChange)
+    }
     }
   },
   beforeUnmount() {
     window.removeEventListener('hashchange', this.applyHash)
     window.removeEventListener('scroll', this.onScroll)
+    if (this.mq && this.onMqChange) {
+      if (this.mq.removeEventListener) this.mq.removeEventListener('change', this.onMqChange)
+      else if (this.mq.removeListener) this.mq.removeListener(this.onMqChange)
+    }
   },
   watch: {
     bgOpacity(val) {

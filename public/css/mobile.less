@@ -301,12 +301,18 @@
   }
 
   .eden-side {
+    /* 吸顶：向下滑也还能点到菜单按钮 */
+    position: sticky;
+    top: 8px;
+    z-index: 46;
     grid-template-columns: 44px 1fr 38px;
     grid-template-areas:
       "logo head toggle"
       "foot foot foot";
     padding: 12px;
     gap: 8px 10px;
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow: 0 10px 26px rgba(103, 84, 160, 0.16);
   }
 
   .nav-toggle {
@@ -634,5 +640,72 @@
 
   .stat span {
     font-size: 10.5px;
+  }
+}
+
+/* =========================================================================
+   手机精简模式：只留内容，装饰动画全部关掉，减少掉帧 / 白块
+   ========================================================================= */
+@media (max-width: 760px) {
+  .orb,
+  .cursor-glow,
+  .sakura-layer,
+  .sakura,
+  .petal {
+    display: none !important;
+  }
+
+  .reveal,
+  .reveal.is-visible {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .reveal .section-head h2,
+  .reveal.is-visible .section-head h2 {
+    clip-path: none !important;
+    transition: none !important;
+  }
+
+  .tilt,
+  .tilt:hover {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .page-banner img {
+    transform: none !important;
+  }
+
+  .eden-bg-image {
+    filter: brightness(1.05) saturate(1.06);
+  }
+}
+/* 手机端页面切换也不做淡入淡出，避免切换瞬间白块 */
+@media (max-width: 760px) {
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: none !important;
+  }
+
+  .fade-enter-from,
+  .fade-leave-to {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+/* 手机端毛玻璃很吃性能，面纱改成纯色渐变、不做呼吸动画 */
+@media (max-width: 760px) {
+  .eden-veil {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  html.has-bg-video .eden-veil {
+    animation: none !important;
   }
 }

@@ -1,25 +1,38 @@
 <template>
   <div class="eden-app">
     <video
-      v-if="configdata.wallpaperVideo && configdata.wallpaperVideo.enable"
+      v-if="!liteMode && configdata.wallpaperVideo && configdata.wallpaperVideo.enable"
       class="eden-bg-video"
       :poster="configdata.wallpaperVideo.poster"
       autoplay
       muted
       loop
       playsinline
+      webkit-playsinline
+      preload="auto"
+      disablepictureinpicture
+      disableremoteplayback
+      x-webkit-airplay="deny"
+      controlslist="nodownload nofullscreen noremoteplayback"
+      tabindex="-1"
       aria-hidden="true"
+      @contextmenu.prevent
     >
       <source :src="configdata.wallpaperVideo.src" type="video/webm" />
     </video>
 
+    <!-- 手机端不加载视频，用同一张海报做静态背景 -->
+    <div v-if="liteMode" class="eden-bg-image" :style="bgImageStyle" aria-hidden="true"></div>
+
     <div class="eden-veil" aria-hidden="true"></div>
 
-    <CursorGlow />
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-    <SakuraLayer />
+    <CursorGlow v-if="!liteMode" />
+    <template v-if="!liteMode">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </template>
+    <SakuraLayer v-if="!liteMode" />
     <ScrollProgress />
     <Splash v-if="showSplash" :image="configdata.splashImage" :doors="configdata.splashDoors" @enter="onEnter" />
 

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * POST /api/register  { gameName, qq, password, guildCode? }
  * 规则：
  *  - 每个游戏名只能注册一次，每个 QQ 也只能注册一次
@@ -7,7 +7,7 @@
 import crypto from 'node:crypto'
 import { store, storageError } from './_kv.js'
 import { json, readBody, hashPassword, createSession, setSessionCookie, publicUser } from './_auth.js'
-import { matchMember, guildCode, checkGameName, checkQQ, checkPassword } from './_guild.js'
+import { matchMember, guildCode, checkGameName, checkQQ, checkPassword, candidateProfile } from './_guild.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return json(res, 405, { error: '只支持 POST' })
@@ -65,6 +65,14 @@ export default async function handler(req, res) {
   }
 
   await store.set(`eden:user:${id}`, JSON.stringify(user))
+
+  // 非名册账号：顺手存一份「成员档案」，格式与老成员一致，方便复制转正
+  if (!member) {
+    try {
+      const profile = await candidateProfile(gameName)
+      await store.set(`eden:candidate:${gameName.toLowerCase()}`, JSON.stringify(profile))
+    } catch (e) { /* 档案失败不影响注册 */ }
+  }
 
   const token = await createSession(id)
   setSessionCookie(res, token)
