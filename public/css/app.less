@@ -1,4 +1,4 @@
-/* =========================================================================
+﻿/* =========================================================================
    伊甸园 Eden · 公会主页样式表
    -------------------------------------------------------------------------
    设计基调：粉紫浅色 + 毛玻璃卡片 + 柔和阴影
@@ -114,7 +114,7 @@ body::after {
   gap: 24px;
   max-width: 1360px;
   margin: 0 auto;
-  padding: 26px 24px 48px;
+  padding: 26px 24px 0;
   align-items: flex-start;
   position: relative;
   z-index: 2; /* 压在樱花层上面 */
@@ -123,6 +123,7 @@ body::after {
 .eden-main {
   flex: 1;
   min-width: 0;
+  padding-bottom: 48px;
 }
 
 /* ------------------------------ 侧栏 ------------------------------ */
@@ -131,14 +132,68 @@ body::after {
   top: 26px;
   flex: 0 0 262px;
   width: 262px;
-  padding: 22px 18px 18px;
-  border-radius: 24px;
+  padding: 16px 14px 14px;
+  border-radius: 20px;
   background: var(--eden-card-2);
   border: 1px solid var(--eden-border);
   box-shadow: var(--eden-shadow);
   -webkit-backdrop-filter: blur(16px) saturate(140%);
   backdrop-filter: blur(16px) saturate(140%);
   text-align: center;
+}
+
+/* 侧栏拆成几块独立的卡片 */
+.side-card {
+  flex: 0 0 auto;
+  padding: 16px 14px;
+  border-radius: 22px;
+  background: var(--eden-card-2);
+  border: 1px solid var(--eden-border);
+  box-shadow: var(--eden-shadow);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+}
+
+/* 品牌框 + 导航框拼成一块 */
+.side-menu {
+  position: relative;
+  display: block;
+}
+
+/* 品牌框：钉在侧栏顶部，下面滚上来的内容到这条线就藏住 */
+.side-brand {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  padding-bottom: 12px;
+  border-radius: 22px 22px 0 0;
+  border-bottom: none;
+  background: #fdfbff;
+  box-shadow: 0 6px 14px -8px rgba(60, 44, 110, 0.25);
+}
+
+.side-brand .eden-user {
+  margin-top: 10px;
+}
+
+.side-nav-card {
+  padding: 0;
+  border-radius: 0 0 22px 22px;
+  border-top: none;
+}
+
+.side-mid {
+  margin-top: 10px;
+  padding: 10px 12px;
+}
+
+.eden-side .side-mid .music {
+  margin-top: 0;
+}
+
+.side-bottom {
+  margin-top: 10px;
+  padding: 12px 14px;
 }
 
 .eden-logo {
@@ -183,13 +238,15 @@ body::after {
   opacity: 0.85;
 }
 
-/* 导航 */
+/* 导航整段自然撑开，全部选项直接展示，不在这里滚 */
 .eden-nav {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  margin: 18px 0 6px;
+  margin: 16px 0 4px;
+  padding: 0;
   text-align: left;
+  overflow: visible;
 }
 
 .eden-nav button {
@@ -807,9 +864,10 @@ a.contact-row:hover {
 
 .products {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow: hidden;
   padding: 8px 10px;
   font-size: 12.5px;
   line-height: 1.55;
@@ -817,6 +875,15 @@ a.contact-row:hover {
   background: rgba(76, 174, 135, 0.09);
   border: 1px solid rgba(76, 174, 135, 0.22);
   border-radius: 10px;
+}
+
+/* 产物固定一行，放不下就省略号折叠 */
+.products span {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .products b {
@@ -1916,4 +1983,247 @@ html.has-bg-video .eden-veil {
   height: 26px;
   flex: 0 0 26px;
   padding: 0;
+}
+/* 桌面窗口不高时收紧侧栏，让 7 个导航项尽量都露出来 */
+@media (min-width: 1025px) and (max-height: 820px) {
+  .eden-side {
+    gap: 9px;
+  }
+
+  .side-card {
+    padding: 12px 12px;
+  }
+
+  .eden-logo {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+  }
+
+  .eden-title {
+    font-size: 21px;
+  }
+
+  .eden-motto {
+    display: none;
+  }
+
+  .eden-nav {
+    margin-top: 8px;
+  }
+
+  .eden-nav button {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .side-bottom .eden-contacts {
+    gap: 6px;
+  }
+}
+/* 侧栏紧凑一点：让导航 7 项在常见高度下能全部放下 */
+.side-auth {
+  padding: 8px 10px;
+}
+
+.side-auth .eden-user {
+  padding: 6px 8px;
+}
+
+.side-top {
+  padding: 12px 12px 6px;
+}
+
+.eden-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+}
+
+.eden-title {
+  margin: 8px 0 0;
+  font-size: 22px;
+}
+
+.eden-sub {
+  margin: 4px 0 0;
+  font-size: 11px;
+}
+
+.eden-motto {
+  margin: 4px 0 0;
+  font-size: 11px;
+}
+
+.side-mid {
+  padding: 8px 10px;
+}
+
+.side-bottom {
+  padding: 10px 12px;
+}
+
+.side-bottom .contact-row {
+  padding: 2px 0;
+  font-size: 11.5px;
+}
+
+.side-bottom .eden-join {
+  margin-top: 8px;
+  padding: 8px 12px;
+}
+
+.eden-side {
+  gap: 8px;
+}
+
+.eden-nav {
+  margin-top: 10px;
+  gap: 4px;
+}
+
+.eden-nav button {
+  padding: 7px 10px;
+  font-size: 13px;
+}
+/* 没有产物时也占一行，卡片高度和公会资源保持一致 */
+.products .none {
+  flex: 1 1 auto;
+  color: rgba(103, 84, 160, 0.32);
+}
+
+/* 双领地：两条指令并排显示 */
+.cmd-label {
+  margin-left: 6px;
+  font-style: normal;
+  font-size: 10.5px;
+  color: var(--eden-muted);
+}
+
+.cmd-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.cmd-list .cmd {
+  margin-top: 0;
+}
+/* 公会建筑没有产物：留一段等高的空白，标签和底色都不可见 */
+.products-blank {
+  visibility: hidden;
+}
+/* =========================================================================
+   侧栏内容整体缩小一档（只作用于 .eden-side 内部）
+   ========================================================================= */
+.eden-side .eden-logo {
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  border-width: 2px;
+}
+
+.eden-side .eden-title {
+  margin: 8px 0 2px;
+  font-size: 23px;
+}
+
+.eden-side .eden-title span {
+  font-size: 15px;
+  letter-spacing: 0.16em;
+}
+
+.eden-side .eden-sub {
+  margin: 0 0 2px;
+  font-size: 10.5px;
+}
+
+.eden-side .eden-motto {
+  margin: 4px 0 0;
+  font-size: 10.5px;
+}
+
+.eden-side .eden-user {
+  margin-top: 8px;
+  padding: 6px;
+  gap: 6px;
+  border-radius: 10px;
+}
+
+.eden-side .eden-login {
+  padding: 7px 8px;
+  font-size: 12px;
+}
+
+.eden-side .user-avatar {
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  font-size: 11px;
+}
+
+.eden-side .user-meta b {
+  font-size: 12px;
+}
+
+.eden-side .user-meta em {
+  font-size: 9.5px;
+}
+
+.eden-side .eden-nav {
+  margin: 10px 0 2px;
+  gap: 3px;
+}
+
+.eden-side .eden-nav button {
+  padding: 7px 9px;
+  gap: 8px;
+  font-size: 12.5px;
+  border-radius: 10px;
+}
+
+.eden-side .eden-nav button .v-icon {
+  font-size: 16px;
+}
+
+.eden-side .music {
+  margin-top: 10px;
+  padding: 7px 8px;
+  border-radius: 12px;
+}
+
+.eden-side .music .cover {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.eden-side .music .meta .title {
+  font-size: 11.5px;
+}
+
+.eden-side .music .meta .artist {
+  font-size: 10px;
+}
+
+.eden-side .eden-contacts {
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.eden-side .contact-row {
+  padding: 3px 2px;
+  font-size: 11.5px;
+  gap: 6px;
+}
+
+.eden-side .contact-row em {
+  font-size: 10.5px;
+}
+
+.eden-side .eden-join {
+  margin-top: 10px;
+  padding: 8px 10px;
+  font-size: 12.5px;
 }

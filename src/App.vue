@@ -54,6 +54,21 @@
             <p class="eden-motto">{{ configdata.guild.motto }}</p>
           </div>
 
+          <!-- 登录框：放在公会首页上面 -->
+          <div class="eden-user">
+            <template v-if="auth.user">
+              <span class="user-avatar" :class="auth.user.role">{{ initials(auth.user.gameName) }}</span>
+              <span class="user-meta">
+                <b>{{ auth.user.gameName }}</b>
+                <em>{{ auth.user.role === 'guild' ? '公会成员' : '会员' }}</em>
+              </span>
+              <button class="user-quit" type="button" @click="doLogout">退出</button>
+            </template>
+            <button v-else class="eden-login" type="button" @click="dialogAuth = true">
+              登录 / 注册
+            </button>
+          </div>
+
           <button class="nav-toggle" type="button" aria-label="打开导航" @click="navOpen = true">
             <v-icon size="20">mdi-menu</v-icon>
           </button>
@@ -76,20 +91,6 @@
           </nav>
 
           <MusicPlayer v-if="configdata.music && configdata.music.enable !== false" :music="configdata.music" />
-
-          <div class="eden-user">
-            <template v-if="auth.user">
-              <span class="user-avatar" :class="auth.user.role">{{ initials(auth.user.gameName) }}</span>
-              <span class="user-meta">
-                <b>{{ auth.user.gameName }}</b>
-                <em>{{ auth.user.role === 'guild' ? '公会成员' : '会员' }}</em>
-              </span>
-              <button class="user-quit" type="button" @click="doLogout">退出</button>
-            </template>
-            <button v-else class="eden-login" type="button" @click="dialogAuth = true">
-              登录 / 注册
-            </button>
-          </div>
 
           <div class="eden-side-foot">
             <div class="eden-contacts">

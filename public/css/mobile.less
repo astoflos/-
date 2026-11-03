@@ -1,4 +1,4 @@
-﻿/* =========================================================================
+/* =========================================================================
    平板 / 手机自适应
    ========================================================================= */
 
@@ -8,31 +8,102 @@
     flex-direction: column;
     align-items: stretch;
     gap: 14px;
-    padding: 12px 12px 96px;
+    padding: 12px 12px 0;
   }
 
   .eden-main {
     width: 100%;
+    padding-bottom: 96px;
   }
 
   .eden-side {
-    position: static;
+    /* 平板起就是「顶部卡片 + 抽屉」，并且吸顶常驻 */
+    position: sticky;
+    top: 8px;
+    z-index: 46;
     width: 100%;
     flex: none;
     /* 关掉毛玻璃，避免 backdrop-filter 让下面的 fixed 气泡以它为定位基准 */
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.97);
     display: grid;
-    grid-template-columns: 56px 1fr;
+    grid-template-columns: 56px 1fr 38px;
     grid-template-areas:
-      "logo head"
-      "nav  nav"
-      "foot foot";
+      "logo head toggle"
+      "foot foot foot";
     gap: 10px 12px;
+    height: auto;
     padding: 14px;
     border-radius: 20px;
     text-align: left;
+    overflow: visible;
+    box-shadow: 0 10px 26px rgba(103, 84, 160, 0.16);
+  }
+
+  /* 侧栏的几块卡片在窄屏合并成顶部这一张，音乐/登录浮成气泡 */
+  .side-menu,
+  .side-brand,
+  .side-nav-card,
+  .side-mid,
+  .side-bottom {
+    display: contents;
+  }
+
+  .nav-toggle {
+    grid-area: toggle;
+    display: flex;
+    align-self: start;
+  }
+
+  /* 导航收进左侧抽屉：默认藏起来，点右上角菜单展开 */
+  .eden-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 236px;
+    max-width: 78vw;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    margin: 0;
+    padding: 14px 12px 20px;
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 0 20px 20px 0;
+    box-shadow: 0 24px 60px rgba(60, 44, 110, 0.32);
+    transform: translateX(-104%);
+    transition: transform 0.34s cubic-bezier(0.66, 0, 0.34, 1);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    z-index: 55;
+  }
+
+  .eden-nav.is-open {
+    transform: none;
+  }
+
+  .nav-head {
+    display: flex;
+  }
+
+  .eden-nav > button {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 11px 12px;
+    font-size: 13.5px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  .eden-nav > button.active {
+    background: rgba(122, 102, 214, 0.14);
+  }
+
+  .nav-backdrop {
+    display: block;
   }
 
   .eden-logo {
@@ -59,30 +130,6 @@
   .eden-sub,
   .eden-motto {
     font-size: 11px;
-  }
-
-  .eden-nav {
-    grid-area: nav;
-    flex-direction: row;
-    gap: 6px;
-    margin: 2px 0 0;
-    padding-bottom: 2px;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .eden-nav::-webkit-scrollbar {
-    display: none;
-  }
-
-  .eden-nav button {
-    flex: 0 0 auto;
-    width: auto;
-    padding: 8px 12px;
-    font-size: 12.5px;
-    white-space: nowrap;
-    border-color: rgba(122, 102, 214, 0.14);
-    background: rgba(255, 255, 255, 0.6);
   }
 
   .eden-side-foot {
@@ -297,27 +344,17 @@
 /* 手机 */
 @media (max-width: 760px) {
   .app-shell {
-    padding: 10px 10px 92px;
+    padding: 10px 10px 0;
+  }
+
+  .eden-main {
+    padding-bottom: 92px;
   }
 
   .eden-side {
-    /* 吸顶：向下滑也还能点到菜单按钮 */
-    position: sticky;
-    top: 8px;
-    z-index: 46;
     grid-template-columns: 44px 1fr 38px;
-    grid-template-areas:
-      "logo head toggle"
-      "foot foot foot";
     padding: 12px;
     gap: 8px 10px;
-    background: rgba(255, 255, 255, 0.97);
-    box-shadow: 0 10px 26px rgba(103, 84, 160, 0.16);
-  }
-
-  .nav-toggle {
-    grid-area: toggle;
-    display: flex;
   }
 
   .eden-logo {
@@ -336,60 +373,6 @@
 
   .eden-sub {
     font-size: 10.5px;
-  }
-
-  /* 导航改成左侧抽屉，默认收起，点右上角按钮打开 */
-  .eden-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 236px;
-    max-width: 78vw;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 6px;
-    margin: 0;
-    padding: 14px 12px 20px;
-    background: rgba(255, 255, 255, 0.97);
-    border-radius: 0 20px 20px 0;
-    box-shadow: 0 24px 60px rgba(60, 44, 110, 0.32);
-    transform: translateX(-104%);
-    transition: transform 0.34s cubic-bezier(0.66, 0, 0.34, 1);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    z-index: 55;
-  }
-
-  .eden-nav.is-open {
-    transform: none;
-  }
-
-  .nav-head {
-    display: flex;
-  }
-
-  .eden-nav button {
-    width: 100%;
-    justify-content: flex-start;
-    gap: 10px;
-    padding: 11px 12px;
-    font-size: 13.5px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.7);
-  }
-
-  .eden-nav button.active {
-    background: rgba(122, 102, 214, 0.14);
-  }
-
-  .eden-nav button:last-child:nth-child(3n + 1) {
-    grid-column: auto;
-  }
-
-  .nav-backdrop {
-    display: block;
   }
 
   /* 小标题行：长说明另起一行，右上角的按钮不再和它挤在一起 */

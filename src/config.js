@@ -130,15 +130,23 @@ const config = {
 	territories: [
 		// ---- 公会建筑 ----
 		{ type: 'building', cmd: '伊甸园Eden', desc: '伊甸园公会主城', products: '', owner: 'ruo_xi' },
-		{ type: 'building', cmd: '伊甸园Eden.基金', desc: '公会金库', products: '钻石原矿', owner: 'ruo_xi' },
+		{ type: 'building', cmd: '伊甸园Eden.基金', desc: '公会金库', products: '', owner: 'ruo_xi' },
+		{ type: 'building', cmd: '伊甸梦想号', desc: '伊甸园梦想号大帆船，驶向未来和远方。', products: '', owner: 'BiliBili' },
+		{ type: 'building', cmd: '伊甸听潮阁', desc: '就是一个小阁楼。', products: '', owner: 'BiliBili' },
 
 		// ---- 公会资源 ----
 		{ type: 'private', cmd: 'Eden沼泽刷怪塔', desc: '沼泽刷怪塔', products: '红石粉、腐肉、骨头、萤石粉、线、黏液球、箭、蜘蛛眼、糖', owner: 'nan_chan' },
 		{ type: 'private', cmd: '蜜蜂', desc: '蜜脾农场', products: '蜜脾、蜂蜜瓶', owner: 'njl_141012CZ' },
-		{ type: 'private', cmd: '伊甸园树苗', desc: '菌类农场', products: '诡异菌柄、绯红菌柄', owner: 'nan_chan' },
+		{ type: 'private', cmd: 'Eden树苗', desc: '菌类农场', products: '诡异菌柄、绯红菌柄', owner: 'nan_chan' },
 		{ type: 'private', cmd: '伊甸园工业区.s', desc: '64 核黑金刚熔炉组', products: '烧炼产物（铁锭、金锭、石头等）', owner: 'guoguo' },
 		{ type: 'private', cmd: '伊甸园工业区.t', desc: '粘液刷铁机', products: '铁锭、铁块', owner: 'guoguo' },
 		{ type: 'private', cmd: 'player的刷铁机', desc: '生电刷铁机', products: '铁锭、基础电路板', owner: 'GamePlayer1' },
+		{ type: 'private', cmd: 'dl/gl', desc: '凋零骷髅塔（双领地）', products: '骨块、煤炭块、凋零骷髅头', owner: 'XIAOXINLI', cmds: [{ label: '产物', cmd: 'dl' }, { label: '挂机', cmd: 'gl' }] },
+		{ type: 'private', cmd: 'yf/tm', desc: '凋零骷髅塔（双领地）', products: '骨块、煤炭块、凋零骷髅头', owner: 'XIAOXINLI', cmds: [{ label: '产物', cmd: 'yf' }, { label: '挂机', cmd: 'tm' }] },
+		{ type: 'private', cmd: 'lbs', desc: '袭击塔', products: '红石粉、萤石粉、火药、糖、白色旗帜、蜘蛛眼、鞍、木棍、玻璃瓶', owner: 'XIAOXINLI' },
+		{ type: 'private', cmd: 'op', desc: '猪灵交易塔', products: '黑曜石、哭泣黑曜石、黑石、灵魂沙、石英、奇怪的下界粘液、失水恶魂、下界砖等', owner: 'XIAOXINLI' },
+		{ type: 'private', cmd: 'qybnc', desc: '潜影贝农场', products: '潜影壳', owner: 'XIAOXINLI' },
+		{ type: 'private', cmd: 'sjc', desc: '猪人塔', products: '黑曜石、金块', owner: 'XIAOXINLI' },
 
 		// ---- 公益资源 ----
 		{ type: 'public', cmd: '大天尊.刷怪笼', desc: '刷怪笼农场', products: '皮革、烈焰棒、骨头、线、箭、蜘蛛眼', owner: '' },

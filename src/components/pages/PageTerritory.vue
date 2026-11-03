@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <div class="toolbar">
       <label class="search">
@@ -46,11 +46,26 @@
 
         <p class="desc" v-html="hl(t.desc)"></p>
 
-        <p v-if="t.products" class="products">
+        <p v-if="t.products" class="products" :title="t.products">
           <b>产物</b><span v-html="hl(t.products)"></span>
         </p>
+        <p v-else class="products products-blank" aria-hidden="true"><b>产物</b><span>&nbsp;</span></p>
 
-        <button class="cmd" :class="{ copied: copied === t.cmd }" type="button" @click="copy(t)">
+        <div v-if="t.cmds && t.cmds.length" class="cmd-list">
+          <button
+            v-for="c in t.cmds"
+            :key="c.cmd"
+            class="cmd"
+            :class="{ copied: copied === c.cmd }"
+            type="button"
+            @click="copyCmd(c.cmd)"
+          >
+            <span class="text">/ps {{ c.cmd }}<em class="cmd-label">{{ c.label }}</em></span>
+            <span class="copy">{{ copied === c.cmd ? '已复制' : '复制' }}</span>
+          </button>
+        </div>
+
+        <button v-else class="cmd" :class="{ copied: copied === t.cmd }" type="button" @click="copyCmd(t.cmd)">
           <span class="text">/ps {{ t.cmd }}</span>
           <span class="copy">{{ copied === t.cmd ? '已复制' : '复制' }}</span>
         </button>
@@ -106,7 +121,20 @@ export default {
       return !!auth.user && auth.user.role === 'guild'
     },
     all() {
-      return [...this.custom, ...this.config.territories]
+      // 排序：公会建筑 → 公会资源 → 公益资源；建筑里主城固定第一
+      const list = [...this.custom, ...this.config.territories]
+      const rank = (t, i) => {
+        if (t.type === 'building') {
+          const isMain = /主城/.test(t.desc || '') || /伊甸园Eden$/.test(t.cmd || '')
+          return isMain ? 0 : 1
+        }
+        if (t.type === 'private') return 2
+        return 3
+      }
+      return list
+        .map((t, i) => ({ t, i }))
+        .sort((a, b) => rank(a.t, a.i) - rank(b.t, b.i) || a.i - b.i)
+        .map(x => x.t)
     },
     terms() {
       return this.q.trim().toLowerCase().split(/\s+/).filter(Boolean)
@@ -115,7 +143,8 @@ export default {
       return this.all.filter(t => {
         if (this.cat !== 'all' && t.type !== this.cat) return false
         if (!this.terms.length) return true
-        const hay = [t.cmd, t.desc, t.products || '', t.owner || ''].join(' ').toLowerCase()
+        const cmdText = (t.cmds || []).map(c => c.cmd + ' ' + (c.label || '')).join(' ')
+        const hay = [t.cmd, t.desc, t.products || '', t.owner || '', cmdText].join(' ').toLowerCase()
         return this.terms.every(term => hay.includes(term))
       })
     },
@@ -184,19 +213,19 @@ export default {
       if (!pattern.length) return raw
       return raw.replace(new RegExp('(' + pattern.join('|') + ')', 'gi'), '<mark>$1</mark>')
     },
-    async copy(t) {
-      const text = '/ps ' + t.cmd
+    async copyCmd(cmd) {
+      const text = '/ps ' + cmd
       const ok = await this.copyText(text)
       if (!ok) {
         this.snackText = '复制失败，请长按指令手动复制'
         this.snackbar = true
         return
       }
-      this.copied = t.cmd
+      this.copied = cmd
       this.snackText = '已复制：' + text
       this.snackbar = true
       setTimeout(() => {
-        if (this.copied === t.cmd) this.copied = ''
+        if (this.copied === cmd) this.copied = ''
       }, 1600)
     },
     async copyText(text) {
@@ -266,9 +295,14 @@ export default {
   text-decoration: underline dotted;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 900px) {
   .territory-grid {
-    grid-template-columns: 1fr;
+    /* minmax(0,1fr) 压住卡片最小宽度，避免窄屏被内容撑出屏 */
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .territory {
+    min-width: 0;
   }
 }
 </style>
