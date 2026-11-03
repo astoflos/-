@@ -142,23 +142,6 @@
       {{ snackText }}
     </v-snackbar>
 
-    <!-- 打开部门时：卡片拉长成详情那一块的过渡动画 -->
-    <Teleport to="body">
-      <div
-        v-if="ghost"
-        class="dept-ghost"
-        :style="{
-          left: ghost.left + 'px',
-          top: ghost.top + 'px',
-          width: ghost.width + 'px',
-          height: ghost.height + 'px',
-          transform: ghostMove || 'none',
-          '--dept-img': `url(${ghost.img || ''})`,
-          '--dept-tint': ghost.tint || '#7a66d6'
-        }"
-      ></div>
-    </Teleport>
-
     <!-- 打字出来的那句问候 -->
     <Teleport to="body">
       <Transition name="greet">
@@ -188,10 +171,6 @@ const settings = ref({})
 const extraMembers = ref([])
 const detail = ref(null)
 const heroReady = ref(false)
-
-// 卡片拉长成详情那一下的「影子」
-const ghost = ref(null)
-const ghostMove = ref('')
 
 // 打开部门时飘出来的那句问候
 const greetShow = ref(false)
@@ -293,14 +272,10 @@ async function playGreet(d) {
 }
 
 /**
- * 点开部门：先把卡片「拉长」到详情卡的位置，再让实体淡入。
- * 用一层 fixed 的影子做 FLIP，避免两套布局之间硬切。
+ * 点开部门：直接切到详情，只有文字浮现，没有卡片飞行动画。
  */
-async function openDetail(d, ev) {
+async function openDetail(d) {
   if (detail.value) return
-
-  const card = ev && ev.currentTarget && ev.currentTarget.getBoundingClientRect ? ev.currentTarget : null
-  const from = card ? card.getBoundingClientRect() : null
 
   detail.value = d
   heroReady.value = false
@@ -309,36 +284,8 @@ async function openDetail(d, ev) {
   window.scrollTo({ top: 0, behavior: 'auto' })
   await nextTick()
 
-  const hero = document.querySelector('.dept-hero')
-  if (!from || !hero) {
-    heroReady.value = true
-    playGreet(d)
-    return
-  }
-
-  const to = hero.getBoundingClientRect()
-  ghostMove.value = 'none'
-  ghost.value = {
-    left: from.left,
-    top: from.top,
-    width: from.width,
-    height: from.height,
-    img: d.image,
-    tint: d.tint
-  }
-  await nextTick()
-
-  const dx = to.left - from.left
-  const dy = to.top - from.top
-  const sx = to.width / from.width
-  const sy = to.height / from.height
-  ghostMove.value = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`
-
-  timers.push(setTimeout(() => {
-    heroReady.value = true
-    ghost.value = null
-    playGreet(d)
-  }, 470))
+  heroReady.value = true
+  playGreet(d)
 }
 
 function back() {

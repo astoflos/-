@@ -17,12 +17,13 @@
         <h2>公会印象</h2>
         <span>GALLERY</span>
       </div>
-      <div class="gallery">
+      <div class="gallery" :class="{ 'is-flower': mobile }">
         <figure
           class="polaroid"
           v-for="(shot, i) in shots"
           :key="shot.src"
-          :style="{ '--rot': shot.rot + 'deg', transitionDelay: i * 50 + 'ms' }"
+          :style="petal(i)"
+          @click="openShot(shot)"
         >
           <img :src="shot.src" :alt="shot.cap" loading="lazy" />
           <figcaption>{{ shot.cap }}</figcaption>
@@ -98,11 +99,19 @@
       <span v-for="line in config.statement" :key="line">{{ line }}<br /></span>
       <span>本站由公会成员维护 · 与服务器官方无关</span>
     </div>
+
+    <!-- 手机端点开花瓣看大图 -->
+    <v-dialog v-model="dialogShot" max-width="520">
+      <div v-if="currentShot" class="shot-card">
+        <img :src="currentShot.src" :alt="currentShot.cap" />
+        <p class="shot-cap">{{ currentShot.cap }}</p>
+      </div>
+    </v-dialog>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 
 const props = defineProps({
   configdata: { type: Object, required: true }
@@ -112,7 +121,7 @@ defineEmits(['join'])
 
 const config = computed(() => props.configdata)
 
-/* 公会印象：白框相片墙 */
+/* 公会印象：白框相片墙；手机端排成五瓣花 */
 const shots = [
   { src: '/img/site/postcard.jpg', cap: '伊甸 · 某个下午', rot: -2.6 },
   { src: '/img/site/gallery-1.jpg', cap: '云上来客', rot: 2.2 },
@@ -120,6 +129,44 @@ const shots = [
   { src: '/img/site/gallery-3.jpg', cap: '旧塔', rot: 2.8 },
   { src: '/img/site/gallery-4.jpg', cap: '风来的方向', rot: -2.2 }
 ]
+
+const mobile = ref(false)
+let mq = null
+const onMq = e => { mobile.value = e.matches }
+
+onMounted(() => {
+  mq = window.matchMedia('(max-width: 760px)')
+  mobile.value = mq.matches
+  if (mq.addEventListener) mq.addEventListener('change', onMq)
+  else if (mq.addListener) mq.addListener(onMq)
+})
+
+onBeforeUnmount(() => {
+  if (!mq) return
+  if (mq.removeEventListener) mq.removeEventListener('change', onMq)
+  else if (mq.removeListener) mq.removeListener(onMq)
+})
+
+/* 五瓣花：以中心为圆心，每 72° 放一张，半径 29%（36% 宽的卡片，不会出屏） */
+const FLOWER_R = 31
+function petal(i) {
+  const base = { '--rot': shots[i].rot + 'deg', transitionDelay: i * 50 + 'ms' }
+  if (!mobile.value) return base
+  const angle = ((-90 + i * 72) * Math.PI) / 180
+  return {
+    ...base,
+    left: (50 + FLOWER_R * Math.cos(angle)).toFixed(2) + '%',
+    top: (50 + FLOWER_R * Math.sin(angle)).toFixed(2) + '%'
+  }
+}
+
+const dialogShot = ref(false)
+const currentShot = ref(null)
+function openShot(shot) {
+  if (!mobile.value) return
+  currentShot.value = shot
+  dialogShot.value = true
+}
 </script>
 
 <style scoped>
@@ -181,5 +228,64 @@ const shots = [
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
   }
+}
+
+/* 手机端：五张照片排成一朵花，点开看大图 */
+@media (max-width: 760px) {
+  .gallery.is-flower {
+    position: relative;
+    display: block;
+    width: min(90vw, 340px);
+    height: min(90vw, 340px);
+    margin: 6px auto 18px;
+  }
+
+  .is-flower .polaroid {
+    position: absolute;
+    width: 34%;
+    margin: 0;
+    padding: 5px 5px 18px;
+    transform: translate(-50%, -50%) rotate(var(--rot));
+    box-shadow: 0 10px 22px rgba(103, 84, 160, 0.24);
+  }
+
+  .is-flower .polaroid:hover,
+  .is-flower .polaroid:active {
+    transform: translate(-50%, -50%) rotate(var(--rot));
+    box-shadow: 0 10px 22px rgba(103, 84, 160, 0.24);
+  }
+
+  .is-flower .polaroid figcaption {
+    margin-top: 4px;
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* 点开花瓣后的大图 */
+.shot-card {
+  padding: 10px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 30px 60px rgba(60, 44, 110, 0.3);
+}
+
+.shot-card img {
+  display: block;
+  width: 100%;
+  max-height: 72vh;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.shot-cap {
+  margin: 10px 0 2px;
+  text-align: center;
+  font-family: "myfont", "STXingkai", "华文行楷", cursive;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--eden-muted);
 }
 </style>
