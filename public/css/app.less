@@ -810,8 +810,8 @@ a.contact-row:hover {
 .territory {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 16px;
+  gap: 8px;
+  padding: 12px 13px;
   background: var(--eden-card-2);
   border: 1px solid var(--eden-border);
   border-radius: 16px;
@@ -844,7 +844,7 @@ a.contact-row:hover {
 
 .territory h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: 14.5px;
   font-weight: 800;
   color: var(--eden-ink);
   word-break: break-word;
@@ -852,13 +852,13 @@ a.contact-row:hover {
 
 .territory .desc {
   margin: 0;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--eden-ink-2);
 }
 
 .territory .owner {
   margin-left: auto;
-  font-size: 11.5px;
+  font-size: 10.5px;
   color: var(--eden-muted);
 }
 
@@ -868,9 +868,9 @@ a.contact-row:hover {
   gap: 8px;
   flex-wrap: nowrap;
   overflow: hidden;
-  padding: 8px 10px;
-  font-size: 12.5px;
-  line-height: 1.55;
+  padding: 6px 9px;
+  font-size: 11.5px;
+  line-height: 1.5;
   color: #1f7a68;
   background: rgba(76, 174, 135, 0.09);
   border: 1px solid rgba(76, 174, 135, 0.22);
@@ -899,12 +899,12 @@ a.contact-row:hover {
 .cmd {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   width: 100%;
   margin-top: 2px;
-  padding: 8px 8px 8px 12px;
+  padding: 6px 7px 6px 10px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--eden-accent);
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(122, 102, 214, 0.28);
@@ -2092,31 +2092,35 @@ html.has-bg-video .eden-veil {
   color: rgba(103, 84, 160, 0.32);
 }
 
-/* 双领地：两条指令并排显示 */
+/* 双维度：两条指令左右并排 */
 .cmd-label {
   margin-left: 6px;
   font-style: normal;
-  font-size: 10.5px;
+  font-size: 10px;
   color: var(--eden-muted);
 }
 
 .cmd-list {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 6px;
   margin-top: 2px;
 }
 
 .cmd-list .cmd {
+  flex: 1 1 0;
+  min-width: 0;
   margin-top: 0;
+  padding: 6px 6px 6px 8px;
 }
 /* 公会建筑没有产物：留一段等高的空白，标签和底色都不可见 */
 .products-blank {
   visibility: hidden;
 }
 /* =========================================================================
-   侧栏内容整体缩小一档（只作用于 .eden-side 内部）
+   侧栏内容整体缩小一档（只作用于桌面端侧栏，移动端顶部卡片不受影响）
    ========================================================================= */
+@media (min-width: 1025px) {
 .eden-side .eden-logo {
   width: 58px;
   height: 58px;
@@ -2226,4 +2230,11 @@ html.has-bg-video .eden-veil {
   margin-top: 10px;
   padding: 8px 10px;
   font-size: 12.5px;
+}
+}
+
+/* 双维度卡片里两条指令的复制按钮小一点，保证并排不挤 */
+.cmd-list .cmd .copy {
+  padding: 3px 6px;
+  font-size: 10.5px;
 }

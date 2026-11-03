@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div>
     <div class="toolbar">
       <label class="search">
@@ -41,7 +41,7 @@
         <div class="territory-top">
           <span class="type-tag" :class="t.type">{{ typeLabel(t.type) }}</span>
           <h3 v-html="hl(t.cmd)"></h3>
-          <span class="owner">主人：{{ t.owner || '公会用' }}</span>
+          <span class="owner">主人：{{ t.owner || '未知' }}</span>
         </div>
 
         <p class="desc" v-html="hl(t.desc)"></p>
@@ -257,8 +257,15 @@ export default {
 <style scoped>
 .territory-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 14px;
+  /* 桌面端固定三列，卡片小一点 */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 1280px) {
+  .territory-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .add-btn {
