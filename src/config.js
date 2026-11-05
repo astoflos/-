@@ -400,7 +400,7 @@ const config = {
 			quote: '最彩笔。'
 		},
 		{
-			name: 'ff', id: 'Ayaka', role: '成员', color: '#c9b471',
+			name: '小樱花', id: 'Ayaka', role: '成员', color: '#c9b471',
 			avatar: '/img/site/avatars/avatar-14.jpg', uid: 'E44682', joinDate: '2026-11-02',
 			intro: '一个纠结的人，一个无聊的人，一个单纯喜欢神里绫华和minecraft的人。',
 			quote: '王手~神里流霜灭！'
