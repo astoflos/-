@@ -25,7 +25,7 @@
     <audio
       ref="audio"
       :src="current.url"
-      preload="none"
+      preload="auto"
       @timeupdate="onTime"
       @ended="next"
       @error="onError"
@@ -39,7 +39,9 @@
 export default {
   name: 'EdenMusic',
   props: {
-    music: { type: Object, default: () => ({}) }
+    music: { type: Object, default: () => ({}) },
+    // 进站自动起播；浏览器拦截时会退化成「第一次点击/按键时补播」
+    autoplay: { type: Boolean, default: true }
   },
   data() {
     return {
@@ -48,7 +50,11 @@ export default {
       playing: false,
       loading: true,
       percent: 0,
-      fallbackCover: '/img/site/logo.jpg'
+      fallbackCover: '/img/site/logo.jpg',
+      autoplayBlocked: false,
+      pendingPlay: false,
+      userPaused: false,
+      gestureBound: false
     }
   },
   computed: {
@@ -61,9 +67,12 @@ export default {
       this.loading = false
       return
     }
+    // 浏览器不允许纯程序化外放；先挂一次手势监听，首屏点开屏时就会补播
+    this.bindGesture()
     this.loadTracks()
   },
   beforeUnmount() {
+    this.removeGesture()
     const a = this.$refs.audio
     if (a) {
       a.pause()
@@ -94,16 +103,67 @@ export default {
         this.tracks = []
       } finally {
         this.loading = false
+        await this.$nextTick()
+        // 歌单就绪后再起播：此时用户往往已经点过开屏，浏览器会把这次播放当作「有交互」
+        if (this.autoplay && !this.userPaused) this.playNow()
       }
     },
+
+    /** 首屏任意一次点击 / 按键都可以作为「用户已交互」的解锁信号 */
+    bindGesture() {
+      if (this.gestureBound) return
+      this.gestureBound = true
+      this._gestureHandler = () => {
+        this.removeGesture()
+        if (!this.userPaused && !this.playing) this.playNow()
+      }
+      document.addEventListener('pointerdown', this._gestureHandler, true)
+      document.addEventListener('keydown', this._gestureHandler, true)
+    },
+
+    removeGesture() {
+      if (this._gestureHandler) {
+        document.removeEventListener('pointerdown', this._gestureHandler, true)
+        document.removeEventListener('keydown', this._gestureHandler, true)
+      }
+      this._gestureHandler = null
+      this.gestureBound = false
+    },
+
+    /** 主动播放一次；被拦截时保持 pending，等下一次手势再试 */
+    async playNow() {
+      const a = this.$refs.audio
+      if (!a) return
+      if (!this.tracks.length || !this.current.url) {
+        this.pendingPlay = true
+        return
+      }
+      if (this.playing || this._playPending) return
+      this._playPending = true
+      try {
+        await a.play()
+        this.pendingPlay = false
+        this.autoplayBlocked = false
+      } catch (e) {
+        this.playing = false
+        this.autoplayBlocked = true
+        this.pendingPlay = true
+        this.bindGesture()
+      } finally {
+        this._playPending = false
+      }
+    },
+
     toggle() {
       const a = this.$refs.audio
       if (!a) return
       if (this.playing) {
+        this.userPaused = true
+        this.pendingPlay = false
         a.pause()
       } else {
-        const p = a.play()
-        if (p && p.catch) p.catch(() => { this.playing = false })
+        this.userPaused = false
+        this.playNow()
       }
     },
     next() {
@@ -118,10 +178,9 @@ export default {
     },
     playIfWasPlaying() {
       const a = this.$refs.audio
-      if (!a) return
+      if (!a || this.userPaused) return
       a.load()
-      const p = a.play()
-      if (p && p.catch) p.catch(() => { this.playing = false })
+      this.playNow()
     },
     onTime() {
       const a = this.$refs.audio

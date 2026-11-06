@@ -31,6 +31,16 @@ const config = {
 		icon: '/img/site/logo.jpg'
 	},
 
+	// 完整站点地址（极简页页脚会指回这里）
+	siteUrl: 'https://eden-guild.top/',
+
+	// 极简模式（纯黑白信息页）地址。
+	// 默认是同一个域名下的 /minimal/；如果以后给极简页绑了二级域名，
+	// 把它改成 'https://minimal.eden-guild.top/' 即可，侧栏按钮会自动跟着走。
+	minimal: {
+		url: '/minimal/'
+	},
+
 	// ================= 站点图像 =================
 	logo: '/img/site/logo.jpg',
 	background: '/img/site/bg.jpg',
@@ -330,8 +340,8 @@ const config = {
 		{
 			name: '果果', id: 'guoguo', role: '成员', color: '#e58fb6',
 			avatar: '/img/site/avatars/avatar-2.jpg', uid: 'E19064', joinDate: '2025-10-03',
-			intro: '什么都不会，什么都会一点，有问题找他就对了。',
-			quote: '~~伊甸园最帅之人~~，全铃兰花圃最帅之人！！'
+			intro: '什么都会一点，有问题找他就对了。',
+			quote: '伊甸园最帅之人！！'
 		},
 		{
 			name: '姐姐', id: 'GamePlayer1', role: '成员', color: '#f0a868',
@@ -404,6 +414,18 @@ const config = {
 			avatar: '/img/site/avatars/avatar-14.jpg', uid: 'E44682', joinDate: '2026-11-02',
 			intro: '一个纠结的人，一个无聊的人，一个单纯喜欢神里绫华和minecraft的人。',
 			quote: '王手~神里流霜灭！'
+		},
+		{
+			name: '小樱花', id: 'AAndor', role: '成员', color: '#c9b471',
+			avatar: '/img/site/avatars/avatar-15.jpg', uid: 'E54589', joinDate: '2026-11-02',
+			intro: '公会最佳苦力。',
+			quote: '小夏会一直盯着你看的。'
+		},
+		{
+			name: '西瓜', id: 'xifo', role: '成员', color: '#c9b471',
+			avatar: '/img/site/avatars/avatar-16.jpg', uid: 'E44682', joinDate: '2026-11-02',
+			intro: '笨宝。',
+			quote: '这个人很懒，什么都没有说...'
 		}
 	],
 
@@ -489,6 +511,9 @@ const config = {
 	// 想换歌：改 keyword（搜索词）或 artist（作者过滤），limit 是保留几首。
 	music: {
 		enable: true,
+		// 进站自动播放。浏览器不允许完全「无声无息」地外放，
+		// 所以点开屏进入时会立刻起播；如果被浏览器拦截，会在下一次点击/按键时自动补播。
+		autoplay: true,
 		api: 'https://api.i-meto.com/meting/api',
 		server: 'netease',
 		keyword: '伊甸微光',

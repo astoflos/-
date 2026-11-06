@@ -31,9 +31,29 @@ npm run preview    # 预览构建结果（预览模式下没有 /api，注册登
 | 招新要求、加入流程 | `recruit.requirements` / `recruit.steps` |
 | 成员名册 | `members`（有注释，照着复制一行；名字用于判断「公会成员」身份） |
 | 守则、里程碑 | `rules` / `milestones` |
-| 音乐 | `music`（Meting 接口 + 关键词） |
+| 音乐 | `music`（Meting 接口 + 关键词，`autoplay` 控制自动播放） |
+| 极简模式入口 | `minimal.url`（默认 `/minimal/`，以后绑了二级域名可改成完整地址） |
 | 入会问卷二维码 | `.join.form.qr`，图片在 `public/img/site/join-qr.jpg` |
 | 公会口令（可选） | `auth.guildCode` |
+
+## 音乐自动播放
+
+`config.music.autoplay` 默认是 `true`。开屏页的点击 / 触摸本身就是一次用户手势，进站时会直接起播；
+如果浏览器仍然拦截（常见于没有开屏的二次访问），播放器会等下一次点击或按键再补播，不会影响页面。
+想关掉自动播放，把 `autoplay` 改成 `false` 即可。
+
+## 极简模式（纯黑白信息页）
+
+侧栏 logo 下方有一个「极简」按钮，默认打开 `/minimal/`：
+
+- 整页只有黑、白两色，没有图片、动画、色彩和任何交互功能（没有登录、音乐、搜索、筛选、弹窗、复制按钮）；
+- 内容仍然来自 `src/config.js`，公告、领地、招新、成员、部门、规则、里程碑都会保留；
+- 页面是构建时生成的纯静态 HTML：`scripts/minimal-page.js` 负责渲染，`scripts/build-minimal.js` 负责写入
+  `dist/minimal/index.html`，`npm run build` 会自动执行；
+- 本地 `npm run dev` 时，`/minimal/` 由 Vite 中间件直接返回，改完 `config.js` 刷新即可看到；
+- 以后想放到二级域名 `minimal.eden-guild.top`：在 Vercel 里给项目加这个域名，然后把
+  `config.minimal.url` 改成 `https://minimal.eden-guild.top/`。`vercel.json` 里已经预留了
+  该域名的根路径重写，指向极简页。
 
 ## 账号系统（会员 / 公会成员）
 
@@ -192,6 +212,8 @@ KV_REST_API_TOKEN
 ```
 api/                 云函数（Vercel Serverless）
 scripts/api-dev.js   本地开发时把 api/* 挂进 Vite 的中间件
+scripts/minimal-page.js  极简页渲染器（纯黑白静态 HTML）
+scripts/build-minimal.js 构建时写出 dist/minimal/index.html
 src/config.js        所有内容的配置
 src/App.vue          外壳：侧栏、导航、开屏、弹窗
 src/components/

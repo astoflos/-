@@ -1,4 +1,4 @@
-﻿import Splash from './components/Splash.vue'
+import Splash from './components/Splash.vue'
 import SakuraLayer from './components/SakuraLayer.vue'
 import ScrollProgress from './components/ScrollProgress.vue'
 import CursorGlow from './components/CursorGlow.vue'
@@ -44,6 +44,10 @@ export default {
       dialogSettings: false,
       navOpen: false,
       liteMode: typeof window !== 'undefined' && window.matchMedia('(max-width: 760px)').matches,
+      // 抽屉模式下（≤1024px）音乐和登录会挪进侧边导航底部
+      drawerMode: typeof window !== 'undefined' && window.matchMedia('(max-width: 1024px)').matches,
+      // Teleport 的目标节点要等根 DOM 挂载完才在 document 里，先等一拍再渲染
+      uiReady: false,
       eggOpen: false,
       bgOpacity: 100,
       date: '',
@@ -77,9 +81,16 @@ export default {
         return `${this.configdata.guild.name} · ${this.configdata.guild.en}`
       }
       return this.currentNav.label
+    },
+    minimalUrl() {
+      const minimal = this.configdata.minimal || {}
+      return minimal.url || '/minimal/'
     }
   },
   mounted() {
+    // Teleport 目标节点此时已经在 document 里了
+    this.uiReady = true
+
     // 背景图由配置注入 CSS 变量
     document.documentElement.style.setProperty('--eden-bg', `url('${this.configdata.background}')`)
 
@@ -118,23 +129,36 @@ export default {
     // 横幅轻微视差（尊重系统的减少动态效果设置）
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       window.addEventListener('scroll', this.onScroll, { passive: true })
-
-    // 横竖屏切换时同步「手机精简模式」
-    if (typeof window !== 'undefined' && window.matchMedia) {
-      this.mq = window.matchMedia('(max-width: 760px)')
-      this.onMqChange = e => { this.liteMode = e.matches }
-      if (this.mq.addEventListener) this.mq.addEventListener('change', this.onMqChange)
-      else if (this.mq.addListener) this.mq.addListener(this.onMqChange)
     }
+
+    // 窗口宽度切换：同步「手机精简模式」和「抽屉模式」
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      this.mqLite = window.matchMedia('(max-width: 760px)')
+      this.onMqLiteChange = e => { this.liteMode = e.matches }
+      if (this.mqLite.addEventListener) this.mqLite.addEventListener('change', this.onMqLiteChange)
+      else if (this.mqLite.addListener) this.mqLite.addListener(this.onMqLiteChange)
+
+      this.mqDrawer = window.matchMedia('(max-width: 1024px)')
+      this.onMqDrawerChange = e => {
+        this.drawerMode = e.matches
+        if (!e.matches) this.navOpen = false
+      }
+      if (this.mqDrawer.addEventListener) this.mqDrawer.addEventListener('change', this.onMqDrawerChange)
+      else if (this.mqDrawer.addListener) this.mqDrawer.addListener(this.onMqDrawerChange)
     }
   },
   beforeUnmount() {
     window.removeEventListener('hashchange', this.applyHash)
     window.removeEventListener('scroll', this.onScroll)
-    if (this.mq && this.onMqChange) {
-      if (this.mq.removeEventListener) this.mq.removeEventListener('change', this.onMqChange)
-      else if (this.mq.removeListener) this.mq.removeListener(this.onMqChange)
-    }
+    const queries = [
+      [this.mqLite, this.onMqLiteChange],
+      [this.mqDrawer, this.onMqDrawerChange]
+    ]
+    queries.forEach(([mq, fn]) => {
+      if (!mq || !fn) return
+      if (mq.removeEventListener) mq.removeEventListener('change', fn)
+      else if (mq.removeListener) mq.removeListener(fn)
+    })
   },
   watch: {
     bgOpacity(val) {
@@ -203,6 +227,19 @@ export default {
     onEnter() {
       sessionStorage.setItem('eden-entered', '1')
       this.showSplash = false
+      // 开屏点击本身就是一次用户手势，直接起播（浏览器不会再拦）
+      this.primeMusic()
+    },
+
+    /** 把「用户已交互」的信号交给播放器；歌单没好时它会记下待播 */
+    primeMusic() {
+      const player = this.$refs.musicPlayer
+      if (player && typeof player.playNow === 'function') player.playNow()
+    },
+
+    openAuth() {
+      this.navOpen = false
+      this.dialogAuth = true
     },
 
     initials(name) {
@@ -229,6 +266,7 @@ export default {
     },
 
     async doLogout() {
+      this.navOpen = false
       await logout()
     },
 

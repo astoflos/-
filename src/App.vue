@@ -34,17 +34,28 @@
     </template>
     <SakuraLayer v-if="!liteMode" />
     <ScrollProgress />
-    <Splash v-if="showSplash" :image="configdata.splashImage" :doors="configdata.splashDoors" @enter="onEnter" />
+    <Splash v-if="showSplash" :image="configdata.splashImage" :doors="configdata.splashDoors" @enter="onEnter" @pointerdown="primeMusic" />
 
     <v-app>
       <div class="app-shell">
         <aside class="eden-side">
-          <img
-            class="eden-logo"
-            :src="configdata.logo"
-            alt="伊甸园 Eden"
-            @click="openEasterEgg"
-          />
+          <div class="eden-brand">
+            <img
+              class="eden-logo"
+              :src="configdata.logo"
+              alt="伊甸园 Eden"
+              @click="openEasterEgg"
+            />
+            <a
+              class="eden-minimal"
+              :href="minimalUrl"
+              title="切换到极简模式"
+              aria-label="切换到极简模式"
+            >
+              <v-icon size="14">mdi-circle-half-full</v-icon>
+              <span>极简</span>
+            </a>
+          </div>
 
           <div class="eden-side-head">
             <h1 class="eden-title">{{ configdata.guild.name }}<span>{{ configdata.guild.en }}</span></h1>
@@ -54,23 +65,9 @@
             <p class="eden-motto">{{ configdata.guild.motto }}</p>
           </div>
 
-          <!-- 登录框：放在公会首页上面 -->
-          <div class="eden-user">
-            <template v-if="auth.user">
-              <span class="user-avatar" :class="auth.user.role">{{ initials(auth.user.gameName) }}</span>
-              <span class="user-meta">
-                <b>{{ auth.user.gameName }}</b>
-                <em>{{ auth.user.role === 'guild' ? '公会成员' : '会员' }}</em>
-              </span>
-              <button class="user-quit" type="button" @click="doLogout">退出</button>
-            </template>
-            <button v-else class="eden-login" type="button" @click="dialogAuth = true">
-              登录 / 注册
-            </button>
-          </div>
-
           <button class="nav-toggle" type="button" aria-label="打开导航" @click="navOpen = true">
-            <v-icon size="20">mdi-menu</v-icon>
+            <v-icon size="21">mdi-menu</v-icon>
+            <span>导航</span>
           </button>
 
           <nav class="eden-nav" :class="{ 'is-open': navOpen }">
@@ -78,19 +75,52 @@
               <span>导航</span>
               <button class="nav-close" type="button" aria-label="关闭导航" @click="navOpen = false">✕</button>
             </div>
-            <button
-              v-for="item in configdata.nav"
-              :key="item.key"
-              type="button"
-              :class="{ active: view === item.key }"
-              @click="go(item.key)"
-            >
-              <v-icon size="18">{{ item.icon }}</v-icon>
-              <span>{{ item.label }}</span>
-            </button>
+
+            <div class="nav-links">
+              <button
+                v-for="item in configdata.nav"
+                :key="item.key"
+                type="button"
+                :class="{ active: view === item.key }"
+                @click="go(item.key)"
+              >
+                <v-icon size="18">{{ item.icon }}</v-icon>
+                <span>{{ item.label }}</span>
+              </button>
+            </div>
+
+            <div class="nav-extra">
+              <div class="nav-extra-music"></div>
+              <div class="nav-extra-auth"></div>
+            </div>
           </nav>
 
-          <MusicPlayer v-if="configdata.music && configdata.music.enable !== false" :music="configdata.music" />
+          <!-- 登录框：桌面在导航上面；手机端会被 Teleport 到抽屉底部 -->
+          <Teleport v-if="uiReady" to=".nav-extra-auth" :disabled="!drawerMode">
+            <div class="eden-user">
+              <template v-if="auth.user">
+                <span class="user-avatar" :class="auth.user.role">{{ initials(auth.user.gameName) }}</span>
+                <span class="user-meta">
+                  <b>{{ auth.user.gameName }}</b>
+                  <em>{{ auth.user.role === 'guild' ? '公会成员' : '会员' }}</em>
+                </span>
+                <button class="user-quit" type="button" @click="doLogout">退出</button>
+              </template>
+              <button v-else class="eden-login" type="button" @click="openAuth">
+                登录 / 注册
+              </button>
+            </div>
+          </Teleport>
+
+          <!-- 音乐：桌面在导航下面；手机端会被 Teleport 到抽屉底部 -->
+          <Teleport v-if="uiReady" to=".nav-extra-music" :disabled="!drawerMode">
+            <MusicPlayer
+              v-if="configdata.music && configdata.music.enable !== false"
+              ref="musicPlayer"
+              :music="configdata.music"
+              :autoplay="configdata.music.autoplay !== false"
+            />
+          </Teleport>
 
           <div class="eden-side-foot">
             <div class="eden-contacts">
