@@ -64,7 +64,8 @@ const config = {
 		// 项目申报用的是 public/img/site/banners/ 里的图，剩下的几张留作以后换
 		projects: '/img/site/banners/banner-04.jpg',
 		departments: '/img/site/banners/banner-03.jpg',
-		about: '/img/site/about.jpg'
+		about: '/img/site/about.jpg',
+		competition: '/img/site/banners/banner-05.jpg'
 	},
 
 	// ================= 公会基本信息 =================
@@ -97,7 +98,9 @@ const config = {
 		{ key: 'members', label: '成员名册', icon: 'mdi-account-group-outline' },
 		{ key: 'projects', label: '项目申报', icon: 'mdi-clipboard-list-outline' },
 		{ key: 'departments', label: '公会部门', icon: 'mdi-office-building-outline' },
-		{ key: 'about', label: '关于与规则', icon: 'mdi-book-open-variant' }
+		{ key: 'about', label: '关于与规则', icon: 'mdi-book-open-variant' },
+		// 活动结束后删掉下面这一行，比赛页面入口就会消失
+		{ key: 'competition', label: '比赛报名', icon: 'mdi-sword-cross' }
 	],
 
 	// 各栏目横幅下的副标题
@@ -108,7 +111,8 @@ const config = {
 		members: '最好的宝子们',
 		projects: '想盖点什么、想造台机器，先在这儿报一笔',
 		departments: '八个部门，各管一摊事',
-		about: '公会简介、守则，还有我们一起走过的路'
+		about: '公会简介、守则，还有我们一起走过的路',
+		competition: '全程 4 人混战 · 胜者晋级 · 败者组再战 · BO3 冠军战'
 	},
 
 	// ================= 联系方式 =================
@@ -122,6 +126,7 @@ const config = {
 	// ================= 公会公告（新的放最前面） =================
 	// 想加公告：复制一整行 { date, tag, title, text }，插到数组第一行（首页会按顺序显示）
 	notices: [
+		{ date: '2026-11-07', tag: '赛事', title: '伊甸园首届有限制格斗大赛报名开启', text: '全程 4 人混战，最后存活者晋级；败者组再战，最终冠军战 BO3。报名方式和完整规则见「比赛报名」页面。' },
 		{ date: '2026-11-01', tag: '站点', title: '伊甸园公会主页上线', text: '领地一览、招新福利、成员名册都可以在这里查到了，有问题欢迎在群里反馈。' },
 		{ date: '2026-10-28', tag: '招新', title: '公会持续招新中', text: '欢迎喜欢建筑、粘液科技或者只是想找人一起玩的朋友，新人进会可领取“伊甸园初遇礼”。' },
 		{ date: '2026-10-20', tag: '领地', title: '领地整理完成', text: '公会资源与公益资源领地已重新登记，使用前请先看一遍领地说明，用完记得关机。' }
@@ -503,6 +508,114 @@ const config = {
 			'加入公会 QQ 群 315931400',
 			'进服后到主城「伊甸园Eden」报到',
 			'找会长「楉曦」领取初遇礼'
+		]
+	},
+
+	// ================= 伊甸园首届有限制格斗大赛 =================
+	// 活动结束后删除比赛页：
+	//   1. 删除本 competition 对象；
+	//   2. 删除上方 nav 里的 competition 那一行；
+	//   3. 删除 pageInfo.competition、banners.competition，以及 notices 里的赛事公告；
+	//   4. 删除 src/components/pages/PageCompetition.vue；
+	//   5. 删除 src/app.js 里 PageCompetition 的 import 和 components 注册。
+	// 比赛页面的内容都在这里改；日期、报名链接没定就先写「待定」。
+	competition: {
+		title: '伊甸园首届有限制格斗大赛',
+		shortTitle: '格斗大赛',
+		status: '报名中',
+		date: '待定',
+		subtitle: '4 人混战 · 单败晋级 · 败者组挑战 · BO3 冠军战',
+		intro: '一场属于伊甸园和朋友们的小型格斗赛。全程 4 人混战，活到最后的人晋级；主赛结束后，所有淘汰选手还有一次从败者组杀回来的机会。',
+		announcement: '经伊甸园公会管理组讨论决定，伊甸园首届有限制格斗大赛正式开放报名。本届比赛采用全程 4 人混战制：每轮随机分组，最后存活者晋级；主赛结束后，所有淘汰选手进入败者组再战，败者组冠军将挑战主赛冠军，争夺最终冠军。比赛以友谊、公平和参与为先，欢迎公会内外玩家报名。具体比赛时间、报名截止时间和装备限制以官网和铃兰官方群公告为准。',
+		tags: ['4 人混战', '单败晋级', '败者组再战', 'BO3 冠军战'],
+		highlights: [
+			{ value: '4 人一组混战', label: '最后存活者晋级' },
+			{ value: '1000w 金币', label: '奖励丰厚 · 预算' },
+			{ value: '装备统一发放', label: '公平公正' },
+			{ value: '伊甸园公会', label: '主持举办' }
+		],
+		signup: {
+			deadline: '待定',
+			// 报名联系人不是群号，而是果果的 QQ
+			qq: '2176483818',
+			contact: '果果 QQ',
+			// 有腾讯文档 / 问卷 / 报名表链接就填这里；留空则引导联系果果报名
+			formUrl: '',
+			formText: '打开报名表',
+			priority: '伊甸园公会成员优先报名',
+			note: '本届比赛优先接受伊甸园公会成员报名。请联系果果（QQ：2176483818），或关注伊甸园官网更新以及铃兰官方 QQ 群聊。',
+			steps: [
+				'联系果果（QQ：2176483818）报名，备注「格斗大赛报名」',
+				'提交游戏 ID、QQ 和可参赛时段',
+				'关注伊甸园官网和铃兰官方 QQ 群公告',
+				'赛前 10 分钟签到，迟到按弃权处理'
+			],
+			template: '游戏 ID：\nQQ：\n可参赛时段：\n是否已阅读规则：'
+		},
+		rewards: [
+			{ title: '决战胜者', value: '坚守光环 II 附魔书', note: '最终冠军战的胜者', icon: 'mdi-crown', grand: true },
+			{ title: '主赛冠军', value: '200 万金币', note: '即胜者组冠军，主赛最后一轮存活者', icon: 'mdi-trophy-variant' },
+			{ title: '主赛亚军', value: '100 万金币', note: '主赛最后一轮最后一个被淘汰者', icon: 'mdi-medal' },
+			{ title: '主赛季军', value: '60 万金币', note: '主赛最后一轮倒数第二个被淘汰者', icon: 'mdi-medal-outline' },
+			{ title: '败者组冠军', value: '80 万金币', note: '败者组最终胜者，获得挑战主赛冠军的资格', icon: 'mdi-sword-cross' },
+			{ title: '参与奖', value: '5 万金币', note: '至少上场完成一局，报名未到场不发', icon: 'mdi-account-heart' },
+			{ title: '成就奖', value: '隐藏奖励', note: '达成隐藏条件即得，可与其他奖励叠加', icon: 'mdi-star-four-points' }
+		],
+		flow: [
+			{ step: '01', title: '主赛 · 4 人混战', text: '每轮 4 人一组，最后存活者晋级；逐轮重新抽签，直到决出主赛冠军。', tag: 'MAIN EVENT', icon: 'mdi-sword-cross' },
+			{ step: '02', title: '败者组 · 再战一次', text: '所有被淘汰选手分批打 4 人混战，每批胜者成为挑战者；挑战者再打一场，胜者为败者组冠军。', tag: 'LOSERS', icon: 'mdi-recycle-variant' },
+			{ step: '03', title: '最终冠军战 · BO3', text: '败者组冠军挑战主赛冠军；主赛冠军 1:0 开局，败者组冠军需连赢 2 局。', tag: 'GRAND FINAL', icon: 'mdi-crown' }
+		],
+		mainRules: [
+			'主赛全程采用 4 人混战。',
+			'每轮按 4 人一组随机抽签；不足 4 人按实际人数开打，只剩 1 人时自动晋级，记为一次轮空。',
+			'每组最后存活者晋级，其余选手全部进入败者组。',
+			'晋级选手重新随机抽签，进入下一轮。'
+		],
+		loserRules: [
+			'参赛者：主赛全部被淘汰选手。',
+			'第一阶段：按人数分批打 4 人混战，每批最后存活者为挑战者。',
+			'第二阶段：所有挑战者打 1 场混战，最后存活者为败者组冠军。',
+			'如果只有 1 名挑战者，该选手自动成为败者组冠军。',
+			'混战判定同主赛：无复活、不设时间限制、以最后存活者为胜。'
+		],
+		finalRules: [
+			'败者组冠军 vs 主赛冠军，BO3。',
+			'主赛冠军默认 1:0 开局。',
+			'败者组冠军需连赢 2 局；主赛冠军再赢 1 局即夺冠。'
+		],
+		equipment: [
+			'装备与道具：待定，赛前由裁判组公布。',
+			'本届为「有限制格斗」，会统一限制附魔、消耗品和特殊道具；具体清单在报名截止后公布。',
+			'禁止自带超出限制的装备；赛前统一检查，违规按判罚规则处理。'
+		],
+		generalRules: [
+			'禁止外挂、宏、透视、自动瞄准、卡 bug、刷物品、恶意掉线、代打、串通放水和辱骂裁判。',
+			'观战禁止报点、发坐标、语音干扰；违者加入伊甸园黑名单并终身禁赛。',
+			'申诉：赛后 10 分钟内提交截图或录像，裁判组终裁。',
+			'违反规则者取消奖励并终身禁赛。',
+			'报名参赛即视为已阅读并同意本届比赛规则。'
+		],
+		achievements: [
+			{ name: '只打高端局', text: '第一轮被淘汰，但最终成为败者组冠军。', icon: 'mdi-arrow-up-bold-circle-outline' },
+			{ name: '直抵群星', text: '以败者组冠军的身份成为最终冠军。', icon: 'mdi-star-shooting' },
+			{ name: '运气也是实力的一部分', text: '因人数不足形成单人组而自动晋级（一次即可，不需要累计两次）。', icon: 'mdi-dice-5-outline' },
+			{ name: '一条命通关', text: '从第一轮至主赛冠军全程未死亡。', icon: 'mdi-heart-pulse' },
+			{ name: '首战即决战', text: '第一轮混战开局 30 秒内完成击杀。', icon: 'mdi-timer-outline' },
+			{ name: '绝地反击', text: '在剩余 1 点生命值（半颗心）时完成反杀，并最终赢下该局。', icon: 'mdi-heart-broken' },
+			{ name: '沉默的杀手', text: '整届比赛未使用图腾与附魔金苹果，仍进入主赛前三。', icon: 'mdi-shield-off-outline' },
+			{ name: '败者组的奇迹', text: '以败者组最低批次挑战者身份夺得败者组冠军。', icon: 'mdi-weather-sunset-up' },
+			{ name: '双杀王者', text: '在同一届比赛中既获得过主赛单局最高击杀，又成为败者组冠军。', icon: 'mdi-sword' },
+			{ name: '铁壁', text: '单局未受到任何伤害即获胜。', icon: 'mdi-shield-star-outline' }
+		],
+		faq: [
+			{ q: '怎么报名？', a: '本届比赛优先接受伊甸园公会成员报名。请联系果果（QQ：2176483818），或关注伊甸园官网更新以及铃兰官方 QQ 群公告。' },
+			{ q: '比赛时间是什么时候？', a: '比赛时间、报名截止时间目前待定，确定后会第一时间在官网和铃兰官方群公告更新。' },
+			{ q: '可以自带装备吗？', a: '本届为有限制格斗，装备与道具清单待定。赛前会公布统一限制，并进行赛前检查。' },
+			{ q: '死了可以复活吗？', a: '不可以。死亡即淘汰并进入观战席，等待败者组或比赛结束。' },
+			{ q: '人数不足 4 人怎么办？', a: '按实际人数开打；如果只剩 1 人，自动晋级并记为一次轮空。' },
+			{ q: '主赛冠军为什么 1:0 开局？', a: '主赛冠军从主赛一路晋级，决赛中先记 1 局优势；败者组冠军需要连赢 2 局才能夺冠。' },
+			{ q: '可以观战吗？', a: '可以。被淘汰选手进入观战席，但禁止报点、发坐标或语音干扰。' }
 		]
 	},
 

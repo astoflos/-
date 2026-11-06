@@ -33,6 +33,7 @@ npm run preview    # 预览构建结果（预览模式下没有 /api，注册登
 | 守则、里程碑 | `rules` / `milestones` |
 | 音乐 | `music`（Meting 接口 + 关键词，`autoplay` 控制自动播放） |
 | 极简模式入口 | `minimal.url`（默认 `/minimal/`，以后绑了二级域名可改成完整地址） |
+| 格斗大赛页面 / 报名 / 奖励 | `competition`（`competition.signup.formUrl` 填报名表链接；留空则引导加群报名） |
 | 入会问卷二维码 | `.join.form.qr`，图片在 `public/img/site/join-qr.jpg` |
 | 公会口令（可选） | `auth.guildCode` |
 
@@ -57,6 +58,53 @@ npm run preview    # 预览构建结果（预览模式下没有 /api，注册登
 - 以后想放到二级域名 `minimal.eden-guild.top`：在 Vercel 里给项目加这个域名，然后把
   `config.minimal.url` 改成 `https://minimal.eden-guild.top/`。`vercel.json` 里已经预留了
   该域名的根路径重写，指向极简页。
+
+## 比赛报名页面
+
+侧栏「关于与规则」之后新增了「比赛报名」页面，内容全部在 `src/config.js` 的 `competition` 里：
+
+- `date` / `status` / `signup.deadline`：比赛时间、当前状态和报名截止时间；
+- `signup.qq` / `signup.contact`：报名联系人（默认果果 QQ `2176483818`）；
+- `signup.formUrl`：如果有腾讯文档 / 问卷链接，填在这里，页面会显示「打开报名表」；
+  留空则显示联系人 QQ 和「复制报名格式」；
+- `rewards` / `flow` / `mainRules` / `loserRules` / `finalRules` /
+  `equipment` / `generalRules` / `achievements` / `faq`：页面各区块的文字；
+- 首页公告里的赛事公告也在 `notices` 里，新的放最前面。
+
+比赛页的赛制是「全程 4 人混战」；主赛冠军在最终冠军战默认 1:0 开局。
+
+### 活动结束后怎么删除比赛页
+
+代码里已经留了注释，按这个顺序删：
+
+1. 删除 `src/components/pages/PageCompetition.vue`；
+2. 打开 `src/app.js`，删除 `PageCompetition` 的 `import` 和 `components` 注册；
+   如果有 `bannerTitle` 里的 `competition` 分支，也可以一并删除；
+3. 打开 `src/config.js`，删除：
+   - `nav` 里的 `{ key: 'competition', ... }` 这一行；
+   - `pageInfo.competition`；
+   - `banners.competition`；
+   - `notices` 里的赛事公告；
+   - 整个 `competition` 对象。
+4. 重新 `npm run build` 或 push 到 GitHub，页面入口和内容就都没有了。
+
+只会删掉比赛页，不会影响其他页面。
+
+### 以后再加一个新页面
+
+以加一个「活动」页面为例：
+
+1. 新建 `src/components/pages/PageEvent.vue`，像其他页面一样接收 `configdata`；
+2. 在 `src/app.js` 里 `import PageEvent`，并加到 `components`；
+3. 在 `src/config.js` 的 `nav` 里加：
+   ```js
+   { key: 'event', label: '活动', icon: 'mdi-calendar-star' }
+   ```
+4. 在 `pageInfo` 加 `event: '副标题'`，在 `banners` 加 `event: '/img/site/banners/banner-01.jpg'`；
+5. 如果需要内容配置，在 `config.js` 里加一个 `event: { ... }` 对象，页面里用 `configdata.event` 读取；
+6. 构建后地址就是 `/#event`。
+
+`app.js` 的 `currentPage` 会自动把 `event` 映射到 `PageEvent`，所以文件名必须对得上。
 
 ## 账号系统（会员 / 公会成员）
 

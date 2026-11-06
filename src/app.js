@@ -12,6 +12,9 @@ import PageMembers from './components/pages/PageMembers.vue'
 import PageProjects from './components/pages/PageProjects.vue'
 import PageDepartments from './components/pages/PageDepartments.vue'
 import PageAbout from './components/pages/PageAbout.vue'
+// 比赛页：活动结束后删除下面这一行、components 里的 PageCompetition，
+// 再按 config.js 顶部注释删除比赛配置即可。
+import PageCompetition from './components/pages/PageCompetition.vue'
 import config from './config.js'
 import { setMeta, getFormattedDate, dataConsole } from './utils/common.js'
 import { auth, loadMe, logout } from './lib/auth.js'
@@ -32,7 +35,9 @@ export default {
     PageMembers,
     PageProjects,
     PageDepartments,
-    PageAbout
+    PageAbout,
+    // 活动结束后删除这一行
+    PageCompetition
   },
   data() {
     return {
@@ -79,6 +84,9 @@ export default {
     bannerTitle() {
       if (this.view === 'home') {
         return `${this.configdata.guild.name} · ${this.configdata.guild.en}`
+      }
+      if (this.view === 'competition') {
+        return (this.configdata.competition && this.configdata.competition.shortTitle) || '格斗大赛'
       }
       return this.currentNav.label
     },
