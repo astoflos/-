@@ -421,7 +421,7 @@ const config = {
 			quote: '王手~神里流霜灭！'
 		},
 		{
-			name: '小樱花', id: 'AAndor', role: '成员', color: '#c9b471',
+			name: '夏', id: 'AAndor', role: '成员', color: '#c9b471',
 			avatar: '/img/site/avatars/avatar-15.jpg', uid: 'E54589', joinDate: '2026-11-02',
 			intro: '公会最佳苦力。',
 			quote: '小夏会一直盯着你看的。'
