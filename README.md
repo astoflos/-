@@ -44,11 +44,14 @@ npm run preview    # 预览构建结果（预览模式下没有 /api，注册登
 
 ## 极简模式（纯黑白信息页）
 
-侧栏 logo 下方有一个「极简」按钮，默认打开 `/minimal/`：
+侧栏 logo 下方有一个「极简」按钮，默认打开 `/minimal/`；手机端这个按钮会变成左下角的悬浮键：
 
-- 整页只有黑、白两色，没有图片、动画、色彩和任何交互功能（没有登录、音乐、搜索、筛选、弹窗、复制按钮）；
-- 内容仍然来自 `src/config.js`，公告、领地、招新、成员、部门、规则、里程碑都会保留；
-- 页面是构建时生成的纯静态 HTML：`scripts/minimal-page.js` 负责渲染，`scripts/build-minimal.js` 负责写入
+- 整页只有黑、白两色，没有图片、动画和色彩；除了「分页导航」之外，没有登录、音乐、搜索、筛选、弹窗、复制等功能；
+- 内容仍然来自 `src/config.js`，并按完整站点的顺序分成 7 页：首页 / 领地 / 招新 / 成员 / 项目 / 部门 / 关于；
+- 分页导航在页面顶部和底部，支持上一页 / 下一页、页内目录和浏览器前进后退（地址栏会变成 `#p2` 这样的分页锚点）；
+- 页面保留极简排版：宋体正文、原来的字号 / 行高 / 段间距，没有卡片、圆角和装饰；
+- 页面是构建时生成的一个静态 HTML 文件（只带分页用的一小段内联脚本）：
+  `scripts/minimal-page.js` 负责渲染，`scripts/build-minimal.js` 负责写入
   `dist/minimal/index.html`，`npm run build` 会自动执行；
 - 本地 `npm run dev` 时，`/minimal/` 由 Vite 中间件直接返回，改完 `config.js` 刷新即可看到；
 - 以后想放到二级域名 `minimal.eden-guild.top`：在 Vercel 里给项目加这个域名，然后把
@@ -212,7 +215,7 @@ KV_REST_API_TOKEN
 ```
 api/                 云函数（Vercel Serverless）
 scripts/api-dev.js   本地开发时把 api/* 挂进 Vite 的中间件
-scripts/minimal-page.js  极简页渲染器（纯黑白静态 HTML）
+scripts/minimal-page.js  极简页渲染器（纯黑白 + 分页导航）
 scripts/build-minimal.js 构建时写出 dist/minimal/index.html
 src/config.js        所有内容的配置
 src/App.vue          外壳：侧栏、导航、开屏、弹窗

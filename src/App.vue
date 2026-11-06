@@ -38,7 +38,7 @@
 
     <v-app>
       <div class="app-shell">
-        <aside class="eden-side">
+        <aside class="eden-side" :class="{ 'is-nav-open': navOpen }">
           <div class="eden-brand">
             <img
               class="eden-logo"

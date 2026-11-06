@@ -196,6 +196,160 @@ export function renderMinimalHtml(config) {
   const statement = (config.statement || []).map(line => `<p>${esc(line)}</p>`).join('')
   const siteUrl = config.siteUrl || 'https://eden-guild.top/'
 
+  // 和完整站点同一套分页顺序：首页 / 领地 / 招新 / 成员 / 项目 / 部门 / 关于
+  const pageDefs = [
+    {
+      id: 'p1',
+      title: '公会首页',
+      html: `
+        <h2>公会简介 <small>ABOUT</small></h2>
+        <p class="lead">${text(guild.slogan)}</p>
+        <p>${text(guild.intro)}</p>
+        ${renderFacts(config)}
+        <h2>公会公告 <small>NOTICE</small></h2>
+        ${renderNotices(config)}
+      `
+    },
+    {
+      id: 'p2',
+      title: '公会领地',
+      html: `
+        <h2>公会领地 <small>TERRITORY</small></h2>
+        <p>以下指令仅作展示，需要在游戏内手动输入；本页不提供复制按钮。</p>
+        ${renderTerritories(config, labels)}
+      `
+    },
+    {
+      id: 'p3',
+      title: '招新福利',
+      html: `
+        <h2>招新福利 <small>RECRUIT</small></h2>
+        ${renderRecruit(config)}
+      `
+    },
+    {
+      id: 'p4',
+      title: '成员名册',
+      html: `
+        <h2>成员名册 <small>MEMBERS</small></h2>
+        ${renderMembers(config)}
+      `
+    },
+    {
+      id: 'p5',
+      title: '项目申报',
+      html: `
+        <h2>项目申报 <small>PROJECTS</small></h2>
+        ${renderProjects(config)}
+      `
+    },
+    {
+      id: 'p6',
+      title: '公会部门',
+      html: `
+        <h2>公会部门 <small>DEPARTMENTS</small></h2>
+        <p>部长任命以完整站点为准，这里只保留部门职责。</p>
+        <ul class="plain">
+          ${(config.departments || []).map(d => `<li><strong>${text(d.name)}</strong>：${text(d.duty)}</li>`).join('')}
+        </ul>
+      `
+    },
+    {
+      id: 'p7',
+      title: '关于与规则',
+      html: `
+        <h2>关于与规则 <small>ABOUT &amp; RULES</small></h2>
+        <h3>公会守则</h3>
+        <ol>${(config.rules || []).map(r => `<li>${esc(r)}</li>`).join('')}</ol>
+        <h3>我们走过的路</h3>
+        ${renderMilestones(config)}
+        <h2>找到我们 <small>CONTACT</small></h2>
+        ${renderContacts(config)}
+        <p>${esc((config.join && config.join.note) || '')}</p>
+      `
+    }
+  ]
+
+  const pagerTop = `<nav class="pager" aria-label="极简模式分页">
+    ${pageDefs.map((p, i) => `<a class="page-link${i === 0 ? ' is-current' : ''}" href="#${p.id}" data-page="${i + 1}"${i === 0 ? ' aria-current="page"' : ''}>${String(i + 1).padStart(2, '0')} ${esc(p.title)}</a>`).join('\n    ')}
+  </nav>`
+
+  const pageSections = pageDefs.map((p, i) => `<section class="content-page" id="${p.id}" data-title="${esc(p.title)}"${i === 0 ? '' : ' hidden'}>
+    ${p.html}
+  </section>`).join('\n')
+
+  const siteTitle = `${guild.name || '伊甸园'} ${guild.en || 'EDEN'} · 极简模式`
+  const pagerScript = `
+<script>
+(function () {
+  var pages = Array.prototype.slice.call(document.querySelectorAll('.content-page'));
+  var links = Array.prototype.slice.call(document.querySelectorAll('.page-link'));
+  var count = document.getElementById('page-count');
+  var prev = document.getElementById('page-prev');
+  var next = document.getElementById('page-next');
+  var baseTitle = ${JSON.stringify(siteTitle)};
+
+  function pageFromHash() {
+    var m = (location.hash || '').match(/^#p([1-9][0-9]*)$/);
+    if (!m) return 1;
+    return Math.min(pages.length, Math.max(1, parseInt(m[1], 10)));
+  }
+
+  function show(n) {
+    n = Math.min(pages.length, Math.max(1, n));
+    pages.forEach(function (page, i) {
+      if (i === n - 1) page.removeAttribute('hidden');
+      else page.setAttribute('hidden', '');
+    });
+    links.forEach(function (link, i) {
+      if (i === n - 1) {
+        link.classList.add('is-current');
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.classList.remove('is-current');
+        link.removeAttribute('aria-current');
+      }
+    });
+    if (count) count.textContent = '第 ' + n + ' / ' + pages.length + ' 页';
+    if (prev) {
+      prev.href = '#' + pages[Math.max(0, n - 2)].id;
+      prev.setAttribute('data-step', String(Math.max(1, n - 1)));
+      if (n === 1) prev.setAttribute('aria-disabled', 'true');
+      else prev.removeAttribute('aria-disabled');
+    }
+    if (next) {
+      next.href = '#' + pages[Math.min(pages.length - 1, n)].id;
+      next.setAttribute('data-step', String(Math.min(pages.length, n + 1)));
+      if (n === pages.length) next.setAttribute('aria-disabled', 'true');
+      else next.removeAttribute('aria-disabled');
+    }
+    document.title = pages[n - 1].getAttribute('data-title') + ' · ' + baseTitle;
+    window.scrollTo(0, 0);
+  }
+
+  function go(n) {
+    var target = 'p' + n;
+    if (location.hash === '#' + target) show(n);
+    else location.hash = target;
+  }
+
+  document.addEventListener('click', function (event) {
+    var link = event.target.closest('a.page-link, a.pager-step');
+    if (!link) return;
+    event.preventDefault();
+    var n = parseInt(link.getAttribute('data-page') || link.getAttribute('data-step') || '1', 10);
+    if (!n || n < 1 || n > pages.length) n = pageFromHash();
+    go(n);
+  });
+
+  window.addEventListener('hashchange', function () {
+    show(pageFromHash());
+  });
+
+  show(pageFromHash());
+})();
+</script>`
+
   return `<!doctype html>
 <html lang="zh-CN">
 <head>
@@ -218,6 +372,34 @@ export function renderMinimalHtml(config) {
     line-height: 1.85;
   }
   .page { max-width: 940px; margin: 0 auto; }
+  .content-page { margin: 34px 0 0; }
+  .content-page[hidden] { display: none; }
+  .content-page h2:not(:first-child) { margin-top: 36px; }
+  .pager {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    margin: 18px 0 0;
+    padding: 10px 0;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  .pager a { text-decoration: none; }
+  .pager a.is-current { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+  .pager-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 42px;
+    border-top: 1px solid #000;
+    border-bottom: 0;
+    padding-top: 12px;
+  }
+  .pager-step[aria-disabled="true"] { opacity: 0.35; pointer-events: none; }
   header { border-bottom: 2px solid #000; padding-bottom: 22px; }
   .kicker { margin: 0 0 10px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11px; letter-spacing: 0.18em; }
   h1 { margin: 0; font-size: 36px; line-height: 1.2; font-weight: 700; letter-spacing: 0.08em; }
@@ -255,6 +437,9 @@ export function renderMinimalHtml(config) {
     table { font-size: 12px; }
     th, td { padding: 4px 5px; }
     .person-line span { display: block; margin-left: 0; }
+    .pager { gap: 4px 10px; font-size: 11.5px; }
+    .pager a { display: inline-flex; align-items: center; min-height: 28px; }
+    .pager-bottom { align-items: flex-start; }
     .territory-table thead { display: none; }
     .territory-table,
     .territory-table tbody,
@@ -269,9 +454,12 @@ export function renderMinimalHtml(config) {
   @media print {
     body { padding: 0; font-size: 11pt; }
     a { text-decoration: none; }
+    .pager { display: none; }
+    .content-page[hidden] { display: block; }
     section { break-inside: avoid; }
   }
 </style>
+<noscript><style>.content-page[hidden] { display: block; } .pager { display: none; }</style></noscript>
 </head>
 <body>
 <main class="page">
@@ -283,67 +471,23 @@ export function renderMinimalHtml(config) {
     <p class="meta">${memberCount} 位成员 · ${territories.length} 处登记领地 · ${buildingCount} 处公会建筑</p>
   </header>
 
-  <section>
-    <h2>公会简介 <small>ABOUT</small></h2>
-    <p class="lead">${text(guild.slogan)}</p>
-    <p>${text(guild.intro)}</p>
-    ${renderFacts(config)}
-  </section>
+  ${pagerTop}
 
-  <section>
-    <h2>公会公告 <small>NOTICE</small></h2>
-    ${renderNotices(config)}
-  </section>
+  ${pageSections}
 
-  <section>
-    <h2>公会领地 <small>TERRITORY</small></h2>
-    <p>以下指令仅作展示，需要在游戏内手动输入；本页不提供复制按钮。</p>
-    ${renderTerritories(config, labels)}
-  </section>
-
-  <section>
-    <h2>招新福利 <small>RECRUIT</small></h2>
-    ${renderRecruit(config)}
-  </section>
-
-  <section>
-    <h2>成员名册 <small>MEMBERS</small></h2>
-    ${renderMembers(config)}
-  </section>
-
-  <section>
-    <h2>公会部门 <small>DEPARTMENTS</small></h2>
-    <p>部长任命以完整站点为准，这里只保留部门职责。</p>
-    <ul class="plain">
-      ${(config.departments || []).map(d => `<li><strong>${text(d.name)}</strong>：${text(d.duty)}</li>`).join('')}
-    </ul>
-  </section>
-
-  <section>
-    <h2>项目申报 <small>PROJECTS</small></h2>
-    ${renderProjects(config)}
-  </section>
-
-  <section>
-    <h2>关于与规则 <small>RULES</small></h2>
-    <h3>公会守则</h3>
-    <ol>${(config.rules || []).map(r => `<li>${esc(r)}</li>`).join('')}</ol>
-    <h3>我们走过的路</h3>
-    ${renderMilestones(config)}
-  </section>
-
-  <section>
-    <h2>找到我们 <small>CONTACT</small></h2>
-    ${renderContacts(config)}
-    <p>${esc((config.join && config.join.note) || '')}</p>
-  </section>
+  <nav class="pager pager-bottom" aria-label="翻页">
+    <a class="pager-step" id="page-prev" href="#${pageDefs[0].id}" data-step="1" aria-disabled="true">← 上一页</a>
+    <span id="page-count" aria-live="polite">第 1 / ${pageDefs.length} 页</span>
+    <a class="pager-step" id="page-next" href="#${pageDefs.length > 1 ? pageDefs[1].id : pageDefs[0].id}" data-step="${pageDefs.length > 1 ? 2 : 1}">下一页 →</a>
+  </nav>
 
   <footer>
     ${statement}
     <p><a href="${esc(siteUrl)}">返回完整站点：${esc(siteUrl.replace(/^https?:\/\//, '').replace(/\/$/, ''))}</a></p>
-    <p>本页为极简模式：没有图片、动画、色彩和交互功能，只保留信息内容。</p>
+    <p>本页为极简模式：没有图片、动画和色彩，只保留文字信息与分页导航。</p>
   </footer>
 </main>
+${pagerScript}
 </body>
 </html>
 `

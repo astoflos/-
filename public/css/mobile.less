@@ -401,15 +401,37 @@
     gap: 8px 10px;
   }
 
+  /* 手机端：极简入口从左栏里拿出来，变成左下角悬浮键 */
+  .eden-minimal {
+    position: fixed;
+    left: 16px;
+    bottom: max(18px, env(safe-area-inset-bottom));
+    z-index: 50;
+    gap: 6px;
+    min-height: 42px;
+    padding: 0 16px;
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(122, 102, 214, 0.3);
+    box-shadow: 0 10px 24px rgba(103, 84, 160, 0.24);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+
+  .eden-minimal .v-icon {
+    font-size: 15px !important;
+  }
+
+  /* 抽屉打开时让位，避免压在遮罩和导航上 */
+  .eden-side.is-nav-open .eden-minimal {
+    opacity: 0;
+    pointer-events: none;
+  }
+
   .eden-brand .eden-logo {
     width: 44px;
     height: 44px;
     border-radius: 13px;
-  }
-
-  .eden-minimal {
-    padding: 3px 6px;
-    font-size: 9.5px;
   }
 
   .nav-toggle {
@@ -664,11 +686,6 @@
     padding: 0 11px;
   }
 
-  .eden-minimal {
-    padding: 3px 5px;
-    font-size: 9px;
-  }
-
   .stat b {
     font-size: 16px;
   }
@@ -691,8 +708,8 @@
   }
 
   .eden-minimal {
-    padding: 3px 4px;
-    font-size: 8.5px;
+    padding: 0 12px;
+    font-size: 11px;
   }
 }
 
