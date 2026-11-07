@@ -153,8 +153,9 @@ const config = {
 		{ type: 'private', cmd: 'Eden沼泽刷怪塔', desc: '沼泽刷怪塔', products: '红石粉、腐肉、骨头、萤石粉、线、黏液球、箭、蜘蛛眼、糖', owner: 'nan_chan' },
 		{ type: 'private', cmd: '蜜蜂', desc: '蜜脾农场', products: '蜜脾、蜂蜜瓶', owner: 'njl_141012CZ' },
 		{ type: 'private', cmd: 'Eden树苗', desc: '菌类农场', products: '诡异菌柄、绯红菌柄', owner: 'nan_chan' },
-		{ type: 'private', cmd: '伊甸园工业区.s', desc: '64 核黑金刚熔炉组', products: '烧炼产物（铁锭、金锭、石头等）', owner: 'guoguo' },
-		{ type: 'private', cmd: '伊甸园工业区.t', desc: '粘液刷铁机', products: '铁锭、铁块', owner: 'guoguo' },
+		{ type: 'private', cmd: 'Eden工业区', desc: '64 核黑金刚熔炉组', products: '烧炼产物（铁锭、金锭、石头等）', owner: 'guoguo' },
+		{ type: 'private', cmd: 'Eden树场', desc: '粘液树场', products: '木炭、煤炭、碳', owner: 'guoguo' },
+		{ type: 'private', cmd: 'Eden树场.t', desc: '粘液刷铁机', products: '铁锭、铁块', owner: 'guoguo' },
 		{ type: 'private', cmd: 'player的刷铁机', desc: '生电刷铁机', products: '铁锭、基础电路板', owner: 'GamePlayer1' },
 		{ type: 'private', cmd: 'dl/gl', desc: '凋零骷髅塔（双维度）', products: '骨块、煤炭块、凋零骷髅头', owner: 'XIAOXINLI', cmds: [{ label: '产物', cmd: 'dl' }, { label: '挂机', cmd: 'gl' }] },
 		{ type: 'private', cmd: 'yf/tm', desc: '凋零骷髅塔（双维度）', products: '骨块、煤炭块、凋零骷髅头', owner: 'XIAOXINLI', cmds: [{ label: '产物', cmd: 'yf' }, { label: '挂机', cmd: 'tm' }] },
@@ -340,7 +341,7 @@ const config = {
 			name: '楉曦', id: 'ruo_xi', role: '会长', color: '#7a66d6',
 			avatar: '/img/site/avatars/avatar-1.jpg', uid: 'E47382', joinDate: '2025-09-19',
 			intro: '公会的第一块基石。',
-			quote: '这个人很懒，什么都没有说...'
+			quote: '做个普通却热烈的女孩，收集生活细碎的欢喜，把烦恼丢给晚风，永远做甜甜的自己。'
 		},
 		{
 			name: '果果', id: 'guoguo', role: '成员', color: '#e58fb6',
@@ -410,7 +411,7 @@ const config = {
 		},
 		{
 			name: 'ff', id: 'ffesyu', role: '成员', color: '#c9b471',
-			avatar: '/img/site/avatars/avatar-13.jpg', uid: 'E27652', joinDate: '2026-11-02',
+			avatar: '/img/site/avatars/avatar-13.jpg', uid: 'E27652', joinDate: '2026-11-04',
 			intro: '很悠闲，成天瞎逛，不知道干啥，有好玩事喊我一个。',
 			quote: '最彩笔。'
 		},
@@ -423,15 +424,21 @@ const config = {
 		{
 			name: '夏', id: 'AAndor', role: '成员', color: '#c9b471',
 			avatar: '/img/site/avatars/avatar-15.jpg', uid: 'E54589', joinDate: '2026-11-02',
-			intro: '公会最佳苦力。',
-			quote: '小夏会一直盯着你看的。'
+			intro: '于纯净世界漫游，朝采山木，暮筑庭园，相逢即是缘分。',
+			quote: '山野为居，岁月从容。'
 		},
 		{
 			name: '西瓜', id: 'xifo', role: '成员', color: '#c9b471',
 			avatar: '/img/site/avatars/avatar-16.jpg', uid: 'E44682', joinDate: '2026-11-02',
 			intro: '笨宝。',
 			quote: '这个人很懒，什么都没有说...'
-		}
+		},
+		{
+			name: '帝君', id: 'WUyuuul', role: '成员', color: '#c9b471',
+			avatar: '/img/site/avatars/avatar-17.jpg', uid: 'E53602', joinDate: '2026-11-02',
+			intro: '公会最佳苦力。',
+			quote: '小夏会一直盯着你看的。'
+		},
 	],
 
 	// ================= 特邀嘉宾 =================
@@ -506,7 +513,7 @@ const config = {
 		steps: [
 			'扫码填写入会问卷（下方二维码）',
 			'加入公会 QQ 群 315931400',
-			'进服后到主城「伊甸园Eden」报到',
+			'进服后到主城「/ps 伊甸园Eden」报到',
 			'找会长「楉曦」领取初遇礼'
 		]
 	},
@@ -530,20 +537,19 @@ const config = {
 		tags: ['4 人混战', '单败晋级', '败者组再战', 'BO3 冠军战'],
 		highlights: [
 			{ value: '4 人一组混战', label: '最后存活者晋级' },
-			{ value: '1000w 金币', label: '奖励丰厚 · 预算' },
-			{ value: '装备统一发放', label: '公平公正' },
+			{ value: '1000w预算', label: '奖励丰厚' },
+			{ value: '装备统一发放', label: '保证公平公正' },
 			{ value: '伊甸园公会', label: '主持举办' }
 		],
 		signup: {
 			deadline: '待定',
-			// 报名联系人不是群号，而是果果的 QQ
 			qq: '2176483818',
 			contact: '果果 QQ',
 			// 有腾讯文档 / 问卷 / 报名表链接就填这里；留空则引导联系果果报名
 			formUrl: '',
 			formText: '打开报名表',
 			priority: '伊甸园公会成员优先报名',
-			note: '本届比赛优先接受伊甸园公会成员报名。请联系果果（QQ：2176483818），或关注伊甸园官网更新以及铃兰官方 QQ 群聊。',
+			note: '本届比赛优先接受伊甸园公会成员报名。请联系果果（QQ：2176483818），或关注伊甸园官网更新以及铃兰 QQ 群聊。',
 			steps: [
 				'联系果果（QQ：2176483818）报名，备注「格斗大赛报名」',
 				'提交游戏 ID、QQ 和可参赛时段',
@@ -598,18 +604,17 @@ const config = {
 		],
 		achievements: [
 			{ name: '只打高端局', text: '第一轮被淘汰，但最终成为败者组冠军。', icon: 'mdi-arrow-up-bold-circle-outline' },
-			{ name: '直抵群星', text: '以败者组冠军的身份成为最终冠军。', icon: 'mdi-star-shooting' },
-			{ name: '运气也是实力的一部分', text: '因人数不足形成单人组而自动晋级（一次即可，不需要累计两次）。', icon: 'mdi-dice-5-outline' },
+			{ name: '直抵群星', text: '以败者组冠军的身份成为最终决赛冠军。', icon: 'mdi-star-shooting' },
+			{ name: '运气也是实力的一部分', text: '因人数不足形成单人组而自动晋级。', icon: 'mdi-dice-5-outline' },
 			{ name: '一条命通关', text: '从第一轮至主赛冠军全程未死亡。', icon: 'mdi-heart-pulse' },
 			{ name: '首战即决战', text: '第一轮混战开局 30 秒内完成击杀。', icon: 'mdi-timer-outline' },
-			{ name: '绝地反击', text: '在剩余 1 点生命值（半颗心）时完成反杀，并最终赢下该局。', icon: 'mdi-heart-broken' },
-			{ name: '沉默的杀手', text: '整届比赛未使用图腾与附魔金苹果，仍进入主赛前三。', icon: 'mdi-shield-off-outline' },
-			{ name: '败者组的奇迹', text: '以败者组最低批次挑战者身份夺得败者组冠军。', icon: 'mdi-weather-sunset-up' },
-			{ name: '双杀王者', text: '在同一届比赛中既获得过主赛单局最高击杀，又成为败者组冠军。', icon: 'mdi-sword' },
-			{ name: '铁壁', text: '单局未受到任何伤害即获胜。', icon: 'mdi-shield-star-outline' }
+			{ name: '绝地反击', text: '使用所有道具，并最终赢下该局。', icon: 'mdi-heart-broken' },
+			{ name: '沉默的杀手', text: '主赛阶段未使用任何道具，仍进入主赛前三。', icon: 'mdi-shield-off-outline' },
+			{ name: '战神', text: '本届比赛中造成获得击杀数量。', icon: 'mdi-sword' },
+			{ name: '铁壁', text: '单局混战中连续击杀三人。', icon: 'mdi-shield-star-outline' }
 		],
 		faq: [
-			{ q: '怎么报名？', a: '本届比赛优先接受伊甸园公会成员报名。请联系果果（QQ：2176483818），或关注伊甸园官网更新以及铃兰官方 QQ 群公告。' },
+			{ q: '怎么报名？', a: '本届比赛优先接受伊甸园公会成员报名。报名请联系果果（QQ：2176483818），或关注伊甸园官网更新以及铃兰官方 QQ 群消息。' },
 			{ q: '比赛时间是什么时候？', a: '比赛时间、报名截止时间目前待定，确定后会第一时间在官网和铃兰官方群公告更新。' },
 			{ q: '可以自带装备吗？', a: '本届为有限制格斗，装备与道具清单待定。赛前会公布统一限制，并进行赛前检查。' },
 			{ q: '死了可以复活吗？', a: '不可以。死亡即淘汰并进入观战席，等待败者组或比赛结束。' },
