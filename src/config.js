@@ -404,6 +404,12 @@ const config = {
 			quote: 'Tiger-Modell, ich kümmere mich darum.'
 		},
 		{
+			name: '帝君', id: 'WUyuuul', role: '成员', color: '#c9b471',
+			avatar: '/img/site/avatars/avatar-17.jpg', uid: 'E53602', joinDate: '2026-10-06',
+			intro: '于纯净世界漫游，朝采山木，暮筑庭园，相逢即是缘分。',
+			quote: '山野为居，岁月从容。'
+		},
+		{
 			name: '楉夕', id: 'ruo_xiao_xi', role: '成员', color: '#c9b471',
 			avatar: '/img/site/avatars/avatar-12.jpg', uid: 'E92331', joinDate: '2026-10-04',
 			intro: '楉曦的妹妹——还是姐姐？。',
@@ -417,27 +423,27 @@ const config = {
 		},
 		{
 			name: '小樱花', id: 'Ayaka', role: '成员', color: '#c9b471',
-			avatar: '/img/site/avatars/avatar-14.jpg', uid: 'E44682', joinDate: '2026-11-02',
+			avatar: '/img/site/avatars/avatar-14.jpg', uid: 'E44682', joinDate: '2026-11-03',
 			intro: '一个纠结的人，一个无聊的人，一个单纯喜欢神里绫华和minecraft的人。',
 			quote: '王手~神里流霜灭！'
 		},
 		{
 			name: '夏', id: 'AAndor', role: '成员', color: '#c9b471',
-			avatar: '/img/site/avatars/avatar-15.jpg', uid: 'E54589', joinDate: '2026-11-02',
+			avatar: '/img/site/avatars/avatar-15.jpg', uid: 'E54589', joinDate: '2026-11-05',
 			intro: '公会最佳苦力。',
 			quote: '小夏会一直盯着你看的。'
 		},
 		{
 			name: '西瓜', id: 'xifo', role: '成员', color: '#c9b471',
-			avatar: '/img/site/avatars/avatar-16.jpg', uid: 'E44682', joinDate: '2026-11-02',
+			avatar: '/img/site/avatars/avatar-16.jpg', uid: 'E44682', joinDate: '2026-11-04',
 			intro: '笨宝。',
 			quote: '这个人很懒，什么都没有说...'
 		},
 		{
-			name: '帝君', id: 'WUyuuul', role: '成员', color: '#c9b471',
-			avatar: '/img/site/avatars/avatar-17.jpg', uid: 'E53602', joinDate: '2026-11-02',
-			intro: '于纯净世界漫游，朝采山木，暮筑庭园，相逢即是缘分。',
-			quote: '山野为居，岁月从容。'
+			name: '猫猫', id: 'Fur_CenXi', role: '成员', color: '#c9b471',
+			avatar: '/img/site/avatars/avatar-18.jpg', uid: 'E77215', joinDate: '2026-11-08',
+			intro: '咪是一只白色蓝眼猫猫啦，叫我晨夕，将会在铃兰长时间在线哦~',
+			quote: 'Ciallo～(∠・ω< )⌒☆ '
 		}
 	],
 
